@@ -10,12 +10,12 @@ import java.util.List;
 @Builder
 public class Lawyer {
 
-    public Lawyer(Integer id, String name) {
+    public Lawyer(String id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    private Integer id;
+    private String id;
     private String name;
-    private List<Object> lawCaseList; // for later
+    private List<LawCase> lawCaseList; // for later
 }

@@ -9,12 +9,12 @@ import lombok.*;
 @Builder
 public class LawCase {
 
-    public LawCase(Integer id, String name) {
+    public LawCase(String id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    private Integer id;
+    private String id;
     private String name;
     private Integer lawClientId;
     private Object lawClient;
