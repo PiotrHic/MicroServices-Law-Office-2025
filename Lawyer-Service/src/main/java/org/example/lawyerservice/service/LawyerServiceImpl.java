@@ -21,6 +21,7 @@ public class LawyerServiceImpl implements LawyerService{
 
     @Autowired
     private final LawyerRepository lawyerRepository;
+
     @Override
     public Lawyer addLawyer(Lawyer lawyer) {
         LOGGER.info("Adding Lawyer: {}", lawyer.getName());
@@ -47,26 +48,32 @@ public class LawyerServiceImpl implements LawyerService{
 
     @Override
     public Lawyer updateLawyerById(String id, Lawyer lawyer) { // to implement
+        Lawyer toUpdate = lawyerRepository.findLawyerById(id);
+        toUpdate.setName(lawyer.getName());
+        toUpdate.setLawCaseList(lawyer.getLawCaseList());
         LOGGER.info("Lawyer with id: {} was updated", id);
-        return null;
+        return toUpdate;
     }
 
     @Override
     public Lawyer updateLawyerByName(String name, Lawyer lawyer) { // to implement
+        Lawyer toUpdate = lawyerRepository.findLawyerByName(name);
+        toUpdate.setName(lawyer.getName());
+        toUpdate.setLawCaseList(lawyer.getLawCaseList());
         LOGGER.info("Lawyer with name: {} was updated", name);
-        return null;
+        return toUpdate;
     }
 
     @Override
     public Lawyer deleteById(String id) { // to implement
         LOGGER.info("Lawyer with id: {} was deleted", id);
-        return null;
+        return lawyerRepository.deleteLawyerById(id);
     }
 
     @Override
     public Lawyer deleteLawyerByName(String name) { // to implement
         LOGGER.info("Lawyer with nam: {} was deleted", name);
-        return null;
+        return lawyerRepository.deleteLawyerByName(name);
     }
 
     @Override

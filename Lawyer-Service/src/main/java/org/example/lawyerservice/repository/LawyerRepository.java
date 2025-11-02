@@ -7,4 +7,6 @@ public interface LawyerRepository extends MongoRepository<Lawyer, String> {
 
     Lawyer findLawyerById(String id);
     Lawyer findLawyerByName(String name);
+    Lawyer deleteLawyerById(String id);
+    Lawyer deleteLawyerByName(String name);
 }

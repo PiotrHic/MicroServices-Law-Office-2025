@@ -2,10 +2,12 @@ package org.example.lawyerservice.repository;
 
 import org.example.lawyerservice.domain.Lawyer;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
@@ -17,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataMongoTest
 @Testcontainers
-public class LawyerRepositoryTest {
+class LawyerRepositoryTest {
 
     @Container
     static MongoDBContainer mongoDBContainer =
@@ -37,14 +39,14 @@ public class LawyerRepositoryTest {
     }
 
     @Test
-    @DisplayName("FindById Test")
+    @DisplayName("ConnectionTest")
     void connectionWorks() { // check of the connection with Mongo DB from the Docker
         assertThat(mongoDBContainer.isCreated()).isTrue();
         assertThat(mongoDBContainer.isRunning()).isTrue();
     }
 
     @Test
-    @DisplayName("FindByName Test")
+    @DisplayName("FindById Test")
     void getLawyerByIdTest(){
         String generatedID = UUID.randomUUID().toString();
         Lawyer first = new Lawyer(generatedID, "First Lawyer");
@@ -54,6 +56,7 @@ public class LawyerRepositoryTest {
     }
 
     @Test
+    @DisplayName("FindByName Test")
     void getLawyerByNameTest(){
         String generatedID = UUID.randomUUID().toString();
         String name = "First Lawyer";
@@ -62,4 +65,38 @@ public class LawyerRepositoryTest {
         Lawyer byName = lawyerRepository.findLawyerByName(name);
         assertThat(byName.equals(first)).isTrue();
     }
+
+    @Test
+    @DisplayName("DeleteById Test")
+    void deleteLawyerById(){
+        String generatedID = UUID.randomUUID().toString();
+        String name1 = "First Lawyer";
+        Lawyer first = new Lawyer(generatedID, name1);
+        lawyerRepository.save(first);
+        int repository_size = lawyerRepository.findAll().size();
+        assertThat(repository_size).isOne();
+        Lawyer deleted = lawyerRepository.deleteLawyerById(generatedID);
+        repository_size = lawyerRepository.findAll().size();
+        assertThat(repository_size).isZero();
+        assertThat(deleted.equals(first)).isTrue();
+    };
+
+
+    @Test
+    @DisplayName("DeleteByName Test")
+    void deleteByName(){
+        String generatedID = UUID.randomUUID().toString();
+        String name1 = "First Lawyer";
+        Lawyer first = new Lawyer(generatedID, name1);
+        int repository_size = lawyerRepository.findAll().size();
+        assertThat(repository_size).isZero();
+        lawyerRepository.save(first);
+        repository_size = lawyerRepository.findAll().size();
+        assertThat(repository_size).isOne();
+        Lawyer deleted = lawyerRepository.deleteLawyerByName(name1);
+        repository_size = lawyerRepository.findAll().size();
+        assertThat(repository_size).isZero();
+        assertThat(deleted.equals(first)).isTrue();
+    };
+
 }

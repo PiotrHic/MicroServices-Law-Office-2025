@@ -14,7 +14,8 @@ public interface LawyerService {
     Lawyer getLawyerByName(String name);
     List<Lawyer> getAllLawyers();
 
-    // U
+
+
     Lawyer updateLawyerById(String id, Lawyer lawyer);
     Lawyer updateLawyerByName(String name, Lawyer lawyer);
 
