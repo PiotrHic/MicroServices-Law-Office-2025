@@ -11,7 +11,7 @@ public interface LawyerService {
 
     // R
     Lawyer getLawyerByID(String id);
-    Lawyer getLawyerByNane(String name);
+    Lawyer getLawyerByName(String name);
     List<Lawyer> getAllLawyers();
 
     // U
