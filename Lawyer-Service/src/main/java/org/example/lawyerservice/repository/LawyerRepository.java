@@ -5,6 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface LawyerRepository extends MongoRepository<Lawyer, String> {
 
-    Object findLawyerById(String id);
-    Object findLawyerByName(String name);
+    Lawyer findLawyerById(String id);
+    Lawyer findLawyerByName(String name);
 }
