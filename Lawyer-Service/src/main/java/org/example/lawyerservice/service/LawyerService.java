@@ -14,13 +14,11 @@ public interface LawyerService {
     Lawyer getLawyerByName(String name);
     List<Lawyer> getAllLawyers();
 
-
-
     Lawyer updateLawyerById(String id, Lawyer lawyer);
     Lawyer updateLawyerByName(String name, Lawyer lawyer);
 
     // D
-    Lawyer deleteById(String id);
+    Lawyer deleteLawyerById(String id);
     Lawyer deleteLawyerByName(String name);
-    String deleteAll();
+    String deleteAlLawyers();
 }

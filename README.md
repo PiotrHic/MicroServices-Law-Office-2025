@@ -3,7 +3,7 @@ Short Description:
 Functionalities:
 - REST API (CRUD)
 - Microservices Architecture
-- Testing (TestContainers, JUNIT5)
+- Testing (TestContainers, JUNIT5, Mockito)
 - Docker Compose
 - Logging
 - Actuator
@@ -15,3 +15,4 @@ Technologies:
 - Docker 
 - Logger
 - Actuator
+- Mockito

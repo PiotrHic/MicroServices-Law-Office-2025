@@ -65,7 +65,7 @@ public class LawyerServiceImpl implements LawyerService{
     }
 
     @Override
-    public Lawyer deleteById(String id) { // to implement
+    public Lawyer deleteLawyerById(String id) { // to implement
         LOGGER.info("Lawyer with id: {} was deleted", id);
         return lawyerRepository.deleteLawyerById(id);
     }
@@ -77,7 +77,7 @@ public class LawyerServiceImpl implements LawyerService{
     }
 
     @Override
-    public String deleteAll() {
+    public String deleteAlLawyers() {
         lawyerRepository.deleteAll();
         return "All Lawyers were removed from database!";
     }
