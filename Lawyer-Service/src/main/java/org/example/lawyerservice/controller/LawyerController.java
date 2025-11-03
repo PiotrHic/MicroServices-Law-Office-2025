@@ -11,11 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -40,8 +39,16 @@ public class LawyerController {
         LOGGER.info("Test Method was requested!");
         return response;
     }
-    Lawyer addLawyer(Lawyer lawyer) {
-        return null;
+    @PostMapping
+    ResponseEntity<LawyerDTO> createLawyer(@RequestBody LawyerDTO lawyerDTO){
+        Optional<LawyerDTO> optLawyerDTO = Optional.ofNullable(lawyerDTO);
+        if(optLawyerDTO.isEmpty()){
+            throw new RuntimeException("Request Body (Lawyer) is not correct!");
+        }
+        Lawyer added = lawyerService.addLawyer(modelMapper.map(optLawyerDTO,Lawyer.class));
+        LOGGER.info("Lawyer: {} was added tp the database!", added.getName());
+        return new ResponseEntity<>(modelMapper.map(added,LawyerDTO.class),
+                HttpStatus.valueOf(201));
     }
     Lawyer getLawyerByID(String id) {
         return null;
