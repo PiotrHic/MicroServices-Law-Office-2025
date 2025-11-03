@@ -20,7 +20,7 @@ import java.util.List;
 public class LawyerController {
 
     private final LawyerService lawyerService;
-    @Autowired
+
     ModelMapper modelMapper = new ModelMapper();
 
 
