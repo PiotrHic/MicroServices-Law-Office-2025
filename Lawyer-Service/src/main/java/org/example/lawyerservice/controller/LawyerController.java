@@ -1,6 +1,7 @@
 package org.example.lawyerservice.controller;
 
 import lombok.AllArgsConstructor;
+import org.example.lawyerservice.domain.DTO.LawyerDTO;
 import org.example.lawyerservice.domain.Lawyer;
 import org.example.lawyerservice.service.LawyerService;
 import org.modelmapper.ModelMapper;
@@ -28,9 +29,10 @@ public class LawyerController {
     private final String PATH_VARIABLE_PATH = "lawyerId";
 
     @GetMapping("/testMethod")
-    ResponseEntity<Lawyer> testMethod() {
+    ResponseEntity<LawyerDTO> testMethod() {
         Lawyer testLawyer = Lawyer.builder().id("1").name("testMethod").build();
-        ResponseEntity<Lawyer> response = new ResponseEntity<>(testLawyer, HttpStatusCode.valueOf(201));
+        LawyerDTO responseDTO = modelMapper.map(testLawyer, LawyerDTO.class);
+        ResponseEntity<LawyerDTO> response = new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(201));
         return response;
     }
     Lawyer addLawyer(Lawyer lawyer) {
