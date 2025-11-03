@@ -40,11 +40,7 @@ public class LawyerController {
     }
     @PostMapping
     ResponseEntity<LawyerDTO> createLawyer(@RequestBody LawyerDTO lawyerDTO){
-        Optional<LawyerDTO> optLawyerDTO = Optional.ofNullable(lawyerDTO);
-        if(optLawyerDTO.isEmpty()){
-            throw new RuntimeException("Request Body (Lawyer) is not correct!");
-        }
-        Lawyer added = lawyerService.addLawyer(modelMapper.map(optLawyerDTO.get(),Lawyer.class));
+        Lawyer added = lawyerService.addLawyer(modelMapper.map(lawyerDTO,Lawyer.class));
         LOGGER.info("Lawyer: {} was added tp the database!", added.getName());
         return new ResponseEntity<>(modelMapper.map(added,LawyerDTO.class),
                 HttpStatus.valueOf(201));
