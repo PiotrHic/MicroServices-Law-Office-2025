@@ -39,7 +39,7 @@ class LawyerRepositoryTest {
     }
 
     @Test
-    @DisplayName("ConnectionTest")
+    @DisplayName("Connection Test")
     void connectionWorks() { // check of the connection with Mongo DB from the Docker
         assertThat(mongoDBContainer.isCreated()).isTrue();
         assertThat(mongoDBContainer.isRunning()).isTrue();

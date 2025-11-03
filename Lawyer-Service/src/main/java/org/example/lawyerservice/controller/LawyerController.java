@@ -7,7 +7,6 @@ import org.example.lawyerservice.service.LawyerService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +44,7 @@ public class LawyerController {
         if(optLawyerDTO.isEmpty()){
             throw new RuntimeException("Request Body (Lawyer) is not correct!");
         }
-        Lawyer added = lawyerService.addLawyer(modelMapper.map(optLawyerDTO,Lawyer.class));
+        Lawyer added = lawyerService.addLawyer(modelMapper.map(optLawyerDTO.get(),Lawyer.class));
         LOGGER.info("Lawyer: {} was added tp the database!", added.getName());
         return new ResponseEntity<>(modelMapper.map(added,LawyerDTO.class),
                 HttpStatus.valueOf(201));

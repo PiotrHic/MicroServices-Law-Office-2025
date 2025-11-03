@@ -7,6 +7,7 @@ Functionalities:
 - Docker Compose
 - Logging
 - Actuator
+- DataBase
 
 Technologies:
 - Testcontainers
@@ -17,3 +18,4 @@ Technologies:
 - Actuator
 - Mockito
 - REST Assured
+- Mongo DB
