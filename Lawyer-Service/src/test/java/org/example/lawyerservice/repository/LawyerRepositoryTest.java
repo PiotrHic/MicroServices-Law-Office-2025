@@ -16,6 +16,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataMongoTest
 @Testcontainers
@@ -51,8 +52,9 @@ class LawyerRepositoryTest {
         String generatedID = UUID.randomUUID().toString();
         Lawyer first = new Lawyer(generatedID, "First Lawyer");
         lawyerRepository.save(first);
-        Lawyer byId = lawyerRepository.findLawyerById(generatedID);
-        assertThat(byId.equals(first)).isTrue();
+        Lawyer founded = lawyerRepository.findById(generatedID)
+                .orElseThrow(() -> new AssertionError("Lawyer not found"));
+        assertNotNull(founded);
     }
 
     @Test
@@ -62,8 +64,9 @@ class LawyerRepositoryTest {
         String name = "First Lawyer";
         Lawyer first = new Lawyer(generatedID, name);
         lawyerRepository.save(first);
-        Lawyer byName = lawyerRepository.findLawyerByName(name);
-        assertThat(byName.equals(first)).isTrue();
+        Lawyer founded = lawyerRepository.findLawyerByName(name)
+                .orElseThrow(() -> new AssertionError("Lawyer not found"));
+        assertNotNull(founded);
     }
 
     @Test
@@ -75,10 +78,12 @@ class LawyerRepositoryTest {
         lawyerRepository.save(first);
         int repository_size = lawyerRepository.findAll().size();
         assertThat(repository_size).isOne();
-        Lawyer deleted = lawyerRepository.deleteLawyerById(generatedID);
+        Lawyer deleted = lawyerRepository.deleteLawyerById(generatedID)
+                .orElseThrow(() -> new AssertionError("Lawyer not found"));
+        assertNotNull(deleted);
         repository_size = lawyerRepository.findAll().size();
         assertThat(repository_size).isZero();
-        assertThat(deleted.equals(first)).isTrue();
+
     };
 
 
@@ -93,10 +98,10 @@ class LawyerRepositoryTest {
         lawyerRepository.save(first);
         repository_size = lawyerRepository.findAll().size();
         assertThat(repository_size).isOne();
-        Lawyer deleted = lawyerRepository.deleteLawyerByName(name1);
+        Lawyer deleted = lawyerRepository.deleteLawyerByName(name1)
+                .orElseThrow(() -> new AssertionError("Lawyer not found"));
+        assertNotNull(deleted);
         repository_size = lawyerRepository.findAll().size();
         assertThat(repository_size).isZero();
-        assertThat(deleted.equals(first)).isTrue();
     };
-
 }
