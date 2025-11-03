@@ -3,6 +3,8 @@ package org.example.lawyerservice.controller;
 import lombok.AllArgsConstructor;
 import org.example.lawyerservice.domain.Lawyer;
 import org.example.lawyerservice.service.LawyerService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,9 @@ import java.util.List;
 public class LawyerController {
 
     private final LawyerService lawyerService;
+    @Autowired
+    ModelMapper modelMapper = new ModelMapper();
+
 
     private final String NUMBER_PATH = "{lawyerId}";
     private final String PATH_VARIABLE_PATH = "lawyerId";
