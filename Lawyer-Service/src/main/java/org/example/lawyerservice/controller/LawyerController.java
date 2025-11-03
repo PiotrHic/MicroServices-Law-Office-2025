@@ -5,6 +5,8 @@ import org.example.lawyerservice.domain.DTO.LawyerDTO;
 import org.example.lawyerservice.domain.Lawyer;
 import org.example.lawyerservice.service.LawyerService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -24,6 +26,8 @@ public class LawyerController {
 
     ModelMapper modelMapper = new ModelMapper();
 
+    private static final Logger LOGGER
+            = LoggerFactory.getLogger(LawyerController.class);
 
     private final String NUMBER_PATH = "{lawyerId}";
     private final String PATH_VARIABLE_PATH = "lawyerId";
@@ -33,6 +37,7 @@ public class LawyerController {
         Lawyer testLawyer = Lawyer.builder().id("1").name("testMethod").build();
         LawyerDTO responseDTO = modelMapper.map(testLawyer, LawyerDTO.class);
         ResponseEntity<LawyerDTO> response = new ResponseEntity<>(responseDTO, HttpStatusCode.valueOf(201));
+        LOGGER.info("Test Method was requested!");
         return response;
     }
     Lawyer addLawyer(Lawyer lawyer) {
