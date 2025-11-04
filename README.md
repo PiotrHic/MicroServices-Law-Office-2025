@@ -8,6 +8,7 @@ Functionalities:
 - Logging
 - Actuator
 - DataBase
+- Auto-generated documentation
 
 Technologies:
 - Testcontainers
@@ -19,3 +20,4 @@ Technologies:
 - Mockito
 - REST Assured
 - Mongo DB
+- Open API

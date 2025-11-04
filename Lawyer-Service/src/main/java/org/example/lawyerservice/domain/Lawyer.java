@@ -18,5 +18,6 @@ public class Lawyer {
 
     private String id;
     private String name;
+    private int yearsOfExperience;
     private List<LawCase> lawCaseList; // for later
 }
