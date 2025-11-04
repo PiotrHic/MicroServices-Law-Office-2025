@@ -28,10 +28,7 @@ public class LawyerController {
     private static final Logger LOGGER
             = LoggerFactory.getLogger(LawyerController.class);
 
-    private final String NUMBER_PATH = "/findById/{lawyerId}";
     private final String NUMBER_VARIABLE_PATH = "lawyerId";
-
-    private final String NAME_PATH = "/fingByName/{lawyerName}";
     private final String NAME_VARIABLE_PATH = "lawyerName";
 
     @GetMapping("/testMethod")
@@ -51,15 +48,15 @@ public class LawyerController {
                 HttpStatus.valueOf(201));
     }
 
-    @GetMapping(NUMBER_PATH)
+    @GetMapping("/getById/{lawyerId}")
     ResponseEntity<LawyerDTO> getLawyerById(@PathVariable(NUMBER_VARIABLE_PATH) String lawyerId) {
         LawyerDTO foundedById = modelMapper.map(lawyerService.getLawyerByID(lawyerId),LawyerDTO.class);
         LOGGER.info("Lawyer: {} was founded by id in the database!", foundedById.getName());
         return new ResponseEntity<>(foundedById, HttpStatus.valueOf(200));
     }
 
-    @GetMapping(NAME_PATH)
-    ResponseEntity<LawyerDTO> getLawyerByName(@PathVariable(NAME_VARIABLE_PATH) String lawyerName) {
+    @GetMapping("/getByName") // ?lawyerName=
+    ResponseEntity<LawyerDTO> getLawyerByName(@RequestParam(NAME_VARIABLE_PATH) String lawyerName) {
         LawyerDTO foundedByName = modelMapper.map(lawyerService.getLawyerByName(lawyerName),LawyerDTO.class);
         LOGGER.info("Lawyer: {} was founded by name in the database!", foundedByName.getName());
         return new ResponseEntity<>(foundedByName, HttpStatus.valueOf(200));
@@ -94,13 +91,24 @@ public class LawyerController {
         LOGGER.info("Lawyer: {} was updated tp the database!", lawyerName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
-    Lawyer deleteLawyerById(String id){
-        return null;
+    @DeleteMapping("/deleteById/{lawyerId}")
+    ResponseEntity <LawyerDTO> deleteLawyerById(@PathVariable(NUMBER_VARIABLE_PATH) String lawyerId){
+        LawyerDTO deleted = modelMapper.map(lawyerService.deleteLawyerById(lawyerId), LawyerDTO.class);
+        LOGGER.info("Lawyer deleted: {}", deleted.getName());
+        return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
-    Lawyer deleteLawyerByName(String name){
-        return null;
+
+    @DeleteMapping("/deleteByName") // ?lawyerName=
+    ResponseEntity <LawyerDTO> deleteLawyerByName(@RequestParam String lawyerName){
+        Lawyer deleted= lawyerService.deleteLawyerByName(lawyerName);
+        LawyerDTO updatedDTO = modelMapper.map(deleted, LawyerDTO.class);
+        LOGGER.info("Lawyer: {} was deleted tp the database!", lawyerName);
+        return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
+    @DeleteMapping("/deleteAll")
     ResponseEntity <String> deleteAlLawyers(){
-        return null;
+        lawyerService.deleteAlLawyers();
+        LOGGER.info("Database is empty");
+        return new ResponseEntity<>("Database is empty", HttpStatus.OK);
     }
 }

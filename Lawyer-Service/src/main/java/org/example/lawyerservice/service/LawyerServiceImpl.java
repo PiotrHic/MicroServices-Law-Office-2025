@@ -1,6 +1,6 @@
 package org.example.lawyerservice.service;
 
-import com.netflix.discovery.converters.Auto;
+
 import lombok.AllArgsConstructor;
 import org.example.lawyerservice.domain.Lawyer;
 import org.example.lawyerservice.exception.LawyerNotFoundException;
@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -42,7 +41,7 @@ public class LawyerServiceImpl implements LawyerService{
         LOGGER.info("Found Lawyer by name: {}", name);
         return lawyerRepository
                 .findLawyerByName(name)
-                .orElseThrow(() -> new LawyerNotFoundException("Lawyer with name: " + name + " was not founded!"));;
+                .orElseThrow(() -> new LawyerNotFoundException("Lawyer with name: " + name + " was not founded!"));
     }
 
     @Override
