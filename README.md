@@ -9,6 +9,7 @@ Functionalities:
 - Actuator
 - DataBase
 - Auto-generated documentation
+- Exception Handler
 
 Technologies:
 - Testcontainers
