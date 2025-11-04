@@ -10,6 +10,8 @@ Functionalities:
 - DataBase
 - Auto-generated documentation
 - Exception Handler
+- Build automation
+- Validation 
 
 Technologies:
 - Testcontainers
@@ -22,3 +24,4 @@ Technologies:
 - REST Assured
 - Mongo DB
 - Open API
+- Maven

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.lawyerservice.domain.DTO.LawyerDTO;
 import org.example.lawyerservice.domain.Lawyer;
@@ -40,7 +41,7 @@ public class LawyerController {
             description = "Add new Lawyer to the database",
             content = {@Content(mediaType =  "application/json")})
     @PostMapping
-    ResponseEntity<LawyerDTO> createLawyer(@RequestBody LawyerDTO lawyerDTO){
+    ResponseEntity<LawyerDTO> createLawyer(@Valid @RequestBody LawyerDTO lawyerDTO){
         Lawyer added = lawyerService.addLawyer(modelMapper.map(lawyerDTO,Lawyer.class));
         LOGGER.info("Lawyer: {} was added tp the database!", added.getName());
         return new ResponseEntity<>(modelMapper.map(added,LawyerDTO.class),
@@ -108,7 +109,7 @@ public class LawyerController {
     })
     @PutMapping("/updateById/{lawyerId}")
     ResponseEntity<LawyerDTO> updateLawyerById(@PathVariable(NUMBER_VARIABLE_PATH) String lawyerId,
-                                               @RequestBody Lawyer lawyer) {
+                                               @Valid @RequestBody Lawyer lawyer) {
         Lawyer updated = lawyerService.updateLawyerById(lawyerId, lawyer);
         LawyerDTO updatedDTO = modelMapper.map(updated, LawyerDTO.class);
         LOGGER.info("Lawyer: {} was updated tp the database!", lawyerId);
@@ -125,7 +126,7 @@ public class LawyerController {
                     content = {@Content(mediaType =  "application/json")}),
     })
     @PutMapping("/updateByName") // ?lawyerName=
-    ResponseEntity<LawyerDTO> updateLawyerByName(@RequestParam String lawyerName, @RequestBody Lawyer lawyer){
+    ResponseEntity<LawyerDTO> updateLawyerByName(@RequestParam String lawyerName,@Valid @RequestBody Lawyer lawyer){
         Lawyer updated = lawyerService.updateLawyerByName(lawyerName, lawyer);
         LawyerDTO updatedDTO = modelMapper.map(updated, LawyerDTO.class);
         LOGGER.info("Lawyer: {} was updated tp the database!", lawyerName);
