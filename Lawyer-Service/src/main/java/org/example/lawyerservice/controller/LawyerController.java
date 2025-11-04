@@ -78,11 +78,21 @@ public class LawyerController {
         return new ResponseEntity<>(lawyersDTO, HttpStatus.valueOf(200));
     }
 
-    Lawyer updateLawyerById(String id, Lawyer lawyer) {
-        return null;
+    @PutMapping("/updateById/{lawyerId}")
+    ResponseEntity<LawyerDTO> updateLawyerById(@PathVariable(NUMBER_VARIABLE_PATH) String lawyerId,
+                                               @RequestBody Lawyer lawyer) {
+        Lawyer updated = lawyerService.updateLawyerById(lawyerId, lawyer);
+        LawyerDTO updatedDTO = modelMapper.map(updated, LawyerDTO.class);
+        LOGGER.info("Lawyer: {} was updated tp the database!", lawyerId);
+        return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
-    Lawyer updateLawyerByName(String name, Lawyer lawyer){
-        return null;
+
+    @PutMapping("/updateByName") // ?lawyerName=
+    ResponseEntity<LawyerDTO> updateLawyerByName(@RequestParam String lawyerName, @RequestBody Lawyer lawyer){
+        Lawyer updated = lawyerService.updateLawyerByName(lawyerName, lawyer);
+        LawyerDTO updatedDTO = modelMapper.map(updated, LawyerDTO.class);
+        LOGGER.info("Lawyer: {} was updated tp the database!", lawyerName);
+        return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
     Lawyer deleteLawyerById(String id){
         return null;
