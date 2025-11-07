@@ -13,6 +13,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "LawCases")
 public class LawCase {
 
+    public LawCase(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     private String id;
     private String name;
     private Integer lawyerId;
