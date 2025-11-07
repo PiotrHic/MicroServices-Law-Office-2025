@@ -9,6 +9,7 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode
 public class Lawyer {
-    private Integer id;
+
+    private String id;
     private String name;
 }
