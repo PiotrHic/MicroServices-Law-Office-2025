@@ -66,6 +66,23 @@ public class LawCaseServiceTest {
     }
 
     @Test
+    void getLawCaseByName_ShouldReturnLawCase_WhenFound() {
+        when(lawCaseRepository.findLawCaseByName("Contract Dispute")).thenReturn(Optional.of(lawCase));
+
+        LawCase result = lawCaseService.getLawCaseByName("Contract Dispute");
+
+        assertEquals(lawCase, result);
+        verify(lawCaseRepository).findLawCaseByName("Contract Dispute");
+    }
+
+    @Test
+    void getLawCaseByName_ShouldThrowException_WhenNotFound() {
+        when(lawCaseRepository.findLawCaseByName("Unknown Case")).thenReturn(Optional.empty());
+
+        assertThrows(LawCaseNotFoundException.class, () -> lawCaseService.getLawCaseByName("Unknown Case"));
+    }
+
+    @Test
     void getAllLawCases_ShouldReturnAllCases() {
         List<LawCase> cases = Arrays.asList(lawCase);
         when(lawCaseRepository.findAll()).thenReturn(cases);
@@ -105,6 +122,23 @@ public class LawCaseServiceTest {
         when(lawCaseRepository.deleteLawCaseById("123")).thenReturn(Optional.empty());
 
         assertThrows(LawyerNotFoundException.class, () -> lawCaseService.deleteLawCaseById("123"));
+    }
+
+    @Test
+    void deleteLawCaseByName_ShouldReturnDeletedCase_WhenFound() {
+        when(lawCaseRepository.deleteLawCaseByName("Contract Dispute")).thenReturn(Optional.of(lawCase));
+
+        LawCase result = lawCaseService.deleteLawCaseByName("Contract Dispute");
+
+        assertEquals(lawCase, result);
+        verify(lawCaseRepository).deleteLawCaseByName("Contract Dispute");
+    }
+
+    @Test
+    void deleteLawCaseByName_ShouldThrowException_WhenNotFound() {
+        when(lawCaseRepository.deleteLawCaseByName("Unknown Case")).thenReturn(Optional.empty());
+
+        assertThrows(LawyerNotFoundException.class, () -> lawCaseService.deleteLawCaseByName("Unknown Case"));
     }
 
     @Test
