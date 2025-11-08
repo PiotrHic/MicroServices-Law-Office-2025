@@ -70,7 +70,7 @@ public class LawyerController {
                                                @Valid @RequestBody Lawyer lawyer) {
         Lawyer updated = lawyerService.updateLawyerById(lawyerId, lawyer);
         LawyerDTO updatedDTO = modelMapper.map(updated, LawyerDTO.class);
-        LOGGER.info("Lawyer: {} was updated tp the database!", lawyerId);
+        LOGGER.info("Lawyer: {} was updated to the database!", lawyerId);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
@@ -78,7 +78,7 @@ public class LawyerController {
     ResponseEntity<LawyerDTO> updateLawyerByName(@RequestParam String lawyerName,@Valid @RequestBody Lawyer lawyer){
         Lawyer updated = lawyerService.updateLawyerByName(lawyerName, lawyer);
         LawyerDTO updatedDTO = modelMapper.map(updated, LawyerDTO.class);
-        LOGGER.info("Lawyer: {} was updated tp the database!", lawyerName);
+        LOGGER.info("Lawyer: {} was updated to the database!", lawyerName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
@@ -93,7 +93,7 @@ public class LawyerController {
     ResponseEntity <LawyerDTO> deleteLawyerByName(@RequestParam String lawyerName){
         Lawyer deleted= lawyerService.deleteLawyerByName(lawyerName);
         LawyerDTO updatedDTO = modelMapper.map(deleted, LawyerDTO.class);
-        LOGGER.info("Lawyer: {} was deleted tp the database!", lawyerName);
+        LOGGER.info("Lawyer: {} was deleted to the database!", lawyerName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 

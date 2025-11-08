@@ -34,7 +34,7 @@ public class LawCaseController {
     private final String NAME_VARIABLE_PATH = "lawCaseName";
 
     @PostMapping
-    ResponseEntity<LawCaseDTO> createLawyer(@Valid @RequestBody LawCaseDTO lawCaseDTO){
+    ResponseEntity<LawCaseDTO> createLawCase(@Valid @RequestBody LawCaseDTO lawCaseDTO){
         LawCase added = lawCaseService.createLawCase(modelMapper.map(lawCaseDTO, LawCase.class));
         LOGGER.info("LawCase: {} was added tp the database!", added.getName());
         return new ResponseEntity<>(modelMapper.map(added,LawCaseDTO.class),
@@ -42,21 +42,21 @@ public class LawCaseController {
     }
 
     @GetMapping("/getById/{lawCaseId}")
-    ResponseEntity<LawCaseDTO> getLawyerById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId) {
+    ResponseEntity<LawCaseDTO> geteLawCaseById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId) {
         LawCaseDTO foundedById = modelMapper.map(lawCaseService.getLawCaseById(lawCaseId),LawCaseDTO.class);
         LOGGER.info("LawCase: {} was founded by id in the database!", foundedById.getName());
         return new ResponseEntity<>(foundedById, HttpStatus.valueOf(200));
     }
 
     @GetMapping("/getByName") // ?lawyerName=
-    ResponseEntity<LawCaseDTO> getLawyerByName(@RequestParam(NAME_VARIABLE_PATH) String lawCaseName) {
+    ResponseEntity<LawCaseDTO> getLawCaseByName(@RequestParam(NAME_VARIABLE_PATH) String lawCaseName) {
         LawCaseDTO foundedByName = modelMapper.map(lawCaseService.getLawCaseByName(lawCaseName),LawCaseDTO.class);
         LOGGER.info("LawCase: {} was founded by name in the database!", foundedByName.getName());
         return new ResponseEntity<>(foundedByName, HttpStatus.valueOf(200));
     }
 
     @GetMapping("/getAllLawCases")
-    ResponseEntity<List<LawCaseDTO>> getAllLawyers() {
+    ResponseEntity<List<LawCaseDTO>> getAllLawCases() {
         List<LawCase> lawCases = lawCaseService.getAllLawCases();
         if (lawCases.isEmpty()) {
             throw new LayerInstantiationException("There is no lawCases in the database!");
@@ -66,6 +66,24 @@ public class LawCaseController {
                 .map(lawCase -> modelMapper.map(lawCase,LawCaseDTO.class))
                 .toList();
         return new ResponseEntity<>(lawCaseDTOs, HttpStatus.valueOf(200));
+    }
+
+    @PutMapping("/updateById/{lawCaseId}")
+    ResponseEntity<LawCaseDTO> updateLawCaseById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId,
+                                               @Valid @RequestBody LawCase lawCase) {
+        LawCase updated = lawCaseService.updateLawCaseById(lawCaseId, lawCase);
+        LawCaseDTO updatedDTO = modelMapper.map(updated, LawCaseDTO.class);
+        LOGGER.info("LawCase: {} was updated by id to the database!", lawCaseId);
+        return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
+    }
+
+    @PutMapping("/updateByName") // ?lawyerName=
+    ResponseEntity<LawCaseDTO> updateLawCaseByName(@RequestParam String lawCaseName,@Valid @RequestBody LawCaseDTO lawCaseDTO){
+        LawCase toUpdate = modelMapper.map(lawCaseDTO, LawCase.class);
+        LawCase updated = lawCaseService.updateLawCaseByName(lawCaseName, toUpdate);
+        LawCaseDTO updatedDTO = modelMapper.map(updated, LawyerDTO.class);
+        LOGGER.info("LawCase: {} was updated by name to the database!", lawCaseName);
+        return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
 }
