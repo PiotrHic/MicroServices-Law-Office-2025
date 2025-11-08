@@ -15,22 +15,17 @@ import java.util.List;
 @Service
 public class LawyerServiceImpl implements LawyerService{
 
-    private static final Logger LOGGER
-            = LoggerFactory.getLogger(LawyerServiceImpl.class);
-
     @Autowired
     private final LawyerRepository lawyerRepository;
 
     @Override
     public Lawyer addLawyer(Lawyer lawyer) {
         Lawyer added = lawyerRepository.save(lawyer);
-        LOGGER.info("Adding Lawyer: {}", lawyer.getName());
         return added;
     }
 
     @Override
     public Lawyer getLawyerByID(String id) {
-        LOGGER.info("Found Lawyer by Id: {}", id);
         return lawyerRepository
                 .findLawyerById(id)
                 .orElseThrow(() -> new LawyerNotFoundException("Lawyer with id: " + id + " was not founded!"));
@@ -38,7 +33,6 @@ public class LawyerServiceImpl implements LawyerService{
 
     @Override
     public Lawyer getLawyerByName(String name) {
-        LOGGER.info("Found Lawyer by name: {}", name);
         return lawyerRepository
                 .findLawyerByName(name)
                 .orElseThrow(() -> new LawyerNotFoundException("Lawyer with name: " + name + " was not founded!"));
@@ -46,7 +40,6 @@ public class LawyerServiceImpl implements LawyerService{
 
     @Override
     public List<Lawyer> getAllLawyers() {
-        LOGGER.info("Found All Lawyers");
         return lawyerRepository.findAll();
     }
 
@@ -55,7 +48,6 @@ public class LawyerServiceImpl implements LawyerService{
         Lawyer toUpdate = getLawyerByID(id);
         toUpdate.setName(lawyer.getName());
         toUpdate.setLawCaseList(lawyer.getLawCaseList());
-        LOGGER.info("Lawyer with id: {} was updated", id);
         return toUpdate;
     }
 
@@ -64,13 +56,11 @@ public class LawyerServiceImpl implements LawyerService{
         Lawyer toUpdate = getLawyerByName(name);
         toUpdate.setName(lawyer.getName());
         toUpdate.setLawCaseList(lawyer.getLawCaseList());
-        LOGGER.info("Lawyer with name: {} was updated", name);
         return toUpdate;
     }
 
     @Override
     public Lawyer deleteLawyerById(String id) { // to implement
-        LOGGER.info("Lawyer with id: {} was deleted", id);
         return lawyerRepository
                 .deleteLawyerById(id)
                 .orElseThrow(() -> new LawyerNotFoundException("Lawyer with id: " + id + " was not founded!"));
@@ -78,7 +68,6 @@ public class LawyerServiceImpl implements LawyerService{
 
     @Override
     public Lawyer deleteLawyerByName(String name) { // to implement
-        LOGGER.info("Lawyer with nam: {} was deleted", name);
         return lawyerRepository
                 .deleteLawyerByName(name)
                 .orElseThrow(() -> new LawyerNotFoundException("Lawyer with name: " + name + " was not founded!"));
