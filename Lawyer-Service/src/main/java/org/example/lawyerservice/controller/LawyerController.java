@@ -21,7 +21,7 @@ public class LawyerController {
 
     private final LawyerService lawyerService;
 
-    ModelMapper modelMapper = new ModelMapper();
+    ModelMapper modelMapper;
 
     private static final Logger LOGGER
             = LoggerFactory.getLogger(LawyerController.class);
