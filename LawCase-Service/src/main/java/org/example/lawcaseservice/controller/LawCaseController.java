@@ -81,9 +81,30 @@ public class LawCaseController {
     ResponseEntity<LawCaseDTO> updateLawCaseByName(@RequestParam String lawCaseName,@Valid @RequestBody LawCaseDTO lawCaseDTO){
         LawCase toUpdate = modelMapper.map(lawCaseDTO, LawCase.class);
         LawCase updated = lawCaseService.updateLawCaseByName(lawCaseName, toUpdate);
-        LawCaseDTO updatedDTO = modelMapper.map(updated, LawyerDTO.class);
+        LawCaseDTO updatedDTO = modelMapper.map(updated, LawCaseDTO.class);
         LOGGER.info("LawCase: {} was updated by name to the database!", lawCaseName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
+    @DeleteMapping("/deleteById/{lawCaseId}")
+    ResponseEntity <LawCaseDTO> deleteLawCaseById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId){
+        LawCaseDTO deleted = modelMapper.map(lawCaseService.deleteLawCaseById(lawCaseId), LawCaseDTO.class);
+        LOGGER.info("LawCase deleted: {} by id from the database!", deleted.getName());
+        return new ResponseEntity<>(deleted, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteByName") // ?lawyerName=
+    ResponseEntity <LawCaseDTO> deleteLawCaseByName(@RequestParam String lawCaseName){
+        LawCase deleted= lawCaseService.deleteLawCaseByName(lawCaseName);
+        LawCaseDTO updatedDTO = modelMapper.map(deleted, LawCaseDTO.class);
+        LOGGER.info("LawCase: {} was deleted by name from the database!", lawCaseName);
+        return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
+    }
+
+    @DeleteMapping("/deleteAll")
+    ResponseEntity <String> deleteAlLawCases(){
+        lawCaseService.deleteAllLawCases();
+        LOGGER.info("Database is empty");
+        return new ResponseEntity<>("Database is empty", HttpStatus.OK);
+    }
 }

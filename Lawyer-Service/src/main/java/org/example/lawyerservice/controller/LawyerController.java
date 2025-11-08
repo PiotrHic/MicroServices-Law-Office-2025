@@ -70,7 +70,7 @@ public class LawyerController {
                                                @Valid @RequestBody Lawyer lawyer) {
         Lawyer updated = lawyerService.updateLawyerById(lawyerId, lawyer);
         LawyerDTO updatedDTO = modelMapper.map(updated, LawyerDTO.class);
-        LOGGER.info("Lawyer: {} was updated to the database!", lawyerId);
+        LOGGER.info("Lawyer: {} was updated by id to the database!", lawyerId);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
@@ -78,14 +78,14 @@ public class LawyerController {
     ResponseEntity<LawyerDTO> updateLawyerByName(@RequestParam String lawyerName,@Valid @RequestBody Lawyer lawyer){
         Lawyer updated = lawyerService.updateLawyerByName(lawyerName, lawyer);
         LawyerDTO updatedDTO = modelMapper.map(updated, LawyerDTO.class);
-        LOGGER.info("Lawyer: {} was updated to the database!", lawyerName);
+        LOGGER.info("Lawyer: {} was updated by name to the database!", lawyerName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
     @DeleteMapping("/deleteById/{lawyerId}")
     ResponseEntity <LawyerDTO> deleteLawyerById(@PathVariable(NUMBER_VARIABLE_PATH) String lawyerId){
         LawyerDTO deleted = modelMapper.map(lawyerService.deleteLawyerById(lawyerId), LawyerDTO.class);
-        LOGGER.info("Lawyer deleted: {}", deleted.getName());
+        LOGGER.info("Lawyer deleted: {} by id from the database!", deleted.getName());
         return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
 
@@ -93,7 +93,7 @@ public class LawyerController {
     ResponseEntity <LawyerDTO> deleteLawyerByName(@RequestParam String lawyerName){
         Lawyer deleted= lawyerService.deleteLawyerByName(lawyerName);
         LawyerDTO updatedDTO = modelMapper.map(deleted, LawyerDTO.class);
-        LOGGER.info("Lawyer: {} was deleted to the database!", lawyerName);
+        LOGGER.info("Lawyer: {} was deleted from the database!", lawyerName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
