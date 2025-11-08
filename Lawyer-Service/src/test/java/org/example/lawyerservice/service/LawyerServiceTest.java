@@ -1,151 +1,167 @@
 package org.example.lawyerservice.service;
 
 import org.example.lawyerservice.domain.Lawyer;
+import org.example.lawyerservice.exception.LawyerNotFoundException;
 import org.example.lawyerservice.repository.LawyerRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.util.Arrays;
 import java.util.List;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @ExtendWith(MockitoExtension.class)
-public class LawyerServiceTest {
+class LawyerServiceImplTest {
 
     @Mock
-    LawyerRepository lawyerRepository;
-
-    AutoCloseable autoCloseable;
+    private LawyerRepository lawyerRepository;
 
     @InjectMocks
-    LawyerServiceImpl lawyerService;
+    private LawyerServiceImpl lawyerService;
 
-    Lawyer returned = Lawyer.builder()
-            .id("1")
-            .name("test1")
-            .build();
-
-    Lawyer first = Lawyer.builder()
-            .id("1")
-            .name("test2")
-            .build();
-
-    Lawyer second = Lawyer.builder()
-            .id("1")
-            .name("test3")
-            .build();
-
+    private Lawyer lawyer;
 
     @BeforeEach
-    void setUp(){
-        autoCloseable = MockitoAnnotations.openMocks(this);
-        lawyerService = new LawyerServiceImpl(lawyerRepository);
-        lawyerService.deleteAlLawyers();
+    void setUp() {
+        lawyer = new Lawyer();
+        lawyer.setId("L1");
+        lawyer.setName("John Doe");
     }
 
-    @AfterEach
-    void tearDown() throws Exception{
-        autoCloseable.close();
+    // ---------- CREATE ----------
+    @Test
+    void addLawyer_ShouldSaveAndReturnLawyer() {
+        when(lawyerRepository.save(lawyer)).thenReturn(lawyer);
+
+        Lawyer result = lawyerService.addLawyer(lawyer);
+
+        assertEquals(lawyer, result);
+        verify(lawyerRepository, times(1)).save(lawyer);
+    }
+
+    // ---------- READ ----------
+    @Test
+    void getLawyerByID_ShouldReturnLawyer_WhenFound() {
+        when(lawyerRepository.findLawyerById("L1")).thenReturn(Optional.of(lawyer));
+
+        Lawyer result = lawyerService.getLawyerByID("L1");
+
+        assertEquals(lawyer, result);
+        verify(lawyerRepository).findLawyerById("L1");
     }
 
     @Test
-    @DisplayName("Add Lawyer Test")
-    void addLawyerTest(){
-        when(lawyerService.addLawyer(returned)).thenReturn(returned);
-        Lawyer result = lawyerService.addLawyer(returned);
-        Assertions.assertEquals(returned.getName(), result.getName());
-    };
+    void getLawyerByID_ShouldThrowException_WhenNotFound() {
+        when(lawyerRepository.findLawyerById("L1")).thenReturn(Optional.empty());
+
+        assertThrows(LawyerNotFoundException.class, () -> lawyerService.getLawyerByID("L1"));
+    }
 
     @Test
-    @DisplayName("Get Lawyer By Id Test")
-    @Disabled
-    void getLawyerByIdTest(String id){
-        Lawyer result = lawyerService.addLawyer(returned);
-        when(lawyerService.getLawyerByID(returned.getId())).thenReturn(result);
-        Assertions.assertEquals(returned.getName(), result.getName());
-    };
+    void getLawyerByName_ShouldReturnLawyer_WhenFound() {
+        when(lawyerRepository.findLawyerByName("John Doe")).thenReturn(Optional.of(lawyer));
+
+        Lawyer result = lawyerService.getLawyerByName("John Doe");
+
+        assertEquals(lawyer, result);
+        verify(lawyerRepository).findLawyerByName("John Doe");
+    }
 
     @Test
-    @DisplayName("Get Lawyer By Name Test")
-    @Disabled
-    void getLawyerByNameTest(String name){
-        Lawyer result = lawyerService.addLawyer(returned);
-        when(lawyerService.getLawyerByName(returned.getName())).thenReturn(returned);
-        Assertions.assertEquals("test1", result.getName());
-    };
+    void getLawyerByName_ShouldThrowException_WhenNotFound() {
+        when(lawyerRepository.findLawyerByName("Unknown")).thenReturn(Optional.empty());
+
+        assertThrows(LawyerNotFoundException.class, () -> lawyerService.getLawyerByName("Unknown"));
+    }
 
     @Test
-    @DisplayName("Get All Lawyers Test")
-    @Disabled
-    void getAllLawyersTest(){
-        int repository_size = lawyerService.getAllLawyers().size();
-        assertThat(repository_size).isZero();
+    void getAllLawyers_ShouldReturnAllLawyers() {
+        List<Lawyer> list = Arrays.asList(lawyer);
+        when(lawyerRepository.findAll()).thenReturn(list);
 
-        lawyerService.addLawyer(first);
-        lawyerService.addLawyer(second);
         List<Lawyer> result = lawyerService.getAllLawyers();
-        repository_size = lawyerService.getAllLawyers().size();
-        assertThat(repository_size).isEqualTo(2);
-    };
+
+        assertEquals(1, result.size());
+        assertEquals("John Doe", result.get(0).getName());
+        verify(lawyerRepository).findAll();
+    }
+
+    // ---------- UPDATE ----------
+    @Test
+    void updateLawyerById_ShouldUpdateFields() {
+        Lawyer updated = new Lawyer();
+        updated.setName("Updated Name");
+
+        when(lawyerRepository.findLawyerById("L1")).thenReturn(Optional.of(lawyer));
+
+        Lawyer result = lawyerService.updateLawyerById("L1", updated);
+
+        assertEquals("Updated Name", result.getName());
+        verify(lawyerRepository).findLawyerById("L1");
+    }
 
     @Test
-    @DisplayName("Update Lawyer By Id Test")
-    @Disabled
-    void updateLawyerByIdTest(String id, Lawyer lawyer){
-        Lawyer added = lawyerService.addLawyer(first);
-        Lawyer updated = lawyerService.updateLawyerById(first.getId(),second);
-        assertThat(first.getId()).isEqualTo(updated.getId());
-        assertThat(first.getName()).isNotEqualTo(updated.getName());
-    };
+    void updateLawyerByName_ShouldUpdateFields() {
+        Lawyer updated = new Lawyer();
+        updated.setName("Updated Lawyer");
+
+        when(lawyerRepository.findLawyerByName("John Doe")).thenReturn(Optional.of(lawyer));
+
+        Lawyer result = lawyerService.updateLawyerByName("John Doe", updated);
+
+        assertEquals("Updated Lawyer", result.getName());
+        verify(lawyerRepository).findLawyerByName("John Doe");
+    }
+
+    // ---------- DELETE ----------
+    @Test
+    void deleteLawyerById_ShouldReturnDeletedLawyer_WhenFound() {
+        when(lawyerRepository.deleteLawyerById("L1")).thenReturn(Optional.of(lawyer));
+
+        Lawyer result = lawyerService.deleteLawyerById("L1");
+
+        assertEquals(lawyer, result);
+        verify(lawyerRepository).deleteLawyerById("L1");
+    }
 
     @Test
-    @DisplayName("Get Lawyer By Name Test")
-    @Disabled
-    void updateLawyerByNameTest(String name, Lawyer lawyer){
-        Lawyer added = lawyerService.addLawyer(first);
-        Lawyer toUpdate = new Lawyer("1", added.getName());
-        Lawyer updated = lawyerService.updateLawyerByName(first.getName(),toUpdate);
-        assertThat(added.getId()).isEqualTo(updated.getId());
-        assertThat(first.getName()).isNotEqualTo(updated.getName());
-    };
+    void deleteLawyerById_ShouldThrowException_WhenNotFound() {
+        when(lawyerRepository.deleteLawyerById("L1")).thenReturn(Optional.empty());
+
+        assertThrows(LawyerNotFoundException.class, () -> lawyerService.deleteLawyerById("L1"));
+    }
 
     @Test
-    @DisplayName("Delete Lawyer By Id Test")
-    @Disabled
-    void deleteByIdTest(String id){
-        Lawyer added = lawyerService.addLawyer(first);
-        Lawyer result = lawyerService.deleteLawyerById(added.getId());
-        assertThat(result).isEqualTo(added);
-    };
+    void deleteLawyerByName_ShouldReturnDeletedLawyer_WhenFound() {
+        when(lawyerRepository.deleteLawyerByName("John Doe")).thenReturn(Optional.of(lawyer));
+
+        Lawyer result = lawyerService.deleteLawyerByName("John Doe");
+
+        assertEquals(lawyer, result);
+        verify(lawyerRepository).deleteLawyerByName("John Doe");
+    }
 
     @Test
-    @DisplayName("Delete Lawyer By Name Test")
-    @Disabled
-    void deleteLawyerByNameTest(String name){
-        Lawyer added = lawyerService.addLawyer(first);
-        Lawyer result = lawyerService.deleteLawyerByName(added.getName());
-        assertThat(result).isEqualTo(added);
-    };
+    void deleteLawyerByName_ShouldThrowException_WhenNotFound() {
+        when(lawyerRepository.deleteLawyerByName("Unknown")).thenReturn(Optional.empty());
+
+        assertThrows(LawyerNotFoundException.class, () -> lawyerService.deleteLawyerByName("Unknown"));
+    }
 
     @Test
-    @DisplayName("Delete All Lawyers Test")
-    @Disabled
-    void deleteAllTest(){
-        int repository_size = lawyerService.getAllLawyers().size();
-        assertThat(repository_size).isZero();
+    void deleteAlLawyers_ShouldReturnConfirmationMessage() {
+        String result = lawyerService.deleteAlLawyers();
 
-        lawyerService.addLawyer(first);
-        lawyerService.addLawyer(second);
-        List<Lawyer> result = lawyerService.getAllLawyers();
-        repository_size = lawyerService.getAllLawyers().size();
-        assertThat(repository_size).isEqualTo(2);
-
-        lawyerService.deleteAlLawyers();
-        repository_size = lawyerService.getAllLawyers().size();
-        assertThat(repository_size).isEqualTo(0);
-    };
+        verify(lawyerRepository).deleteAll();
+        assertEquals("All Lawyers were removed from database!", result);
+    }
 }
 
