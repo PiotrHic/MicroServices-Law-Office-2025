@@ -1,8 +1,10 @@
-package org.example.lawyerservice.exception;
+package org.example.lawcaseservice.exception;
 
+import org.example.lawyerservice.exception.LawyerNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,8 +12,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class ExceptionHandler {
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(LawyerNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleLawyerNotFound(LawyerNotFoundException ex) {
+    @org.springframework.web.bind.annotation.ExceptionHandler(LawCaseNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleLawCaseNotFound(LawCaseNotFoundException ex) {
         Map<String, Object> error = new HashMap<>();
         error.put("timestamp", LocalDateTime.now());
         error.put("status", HttpStatus.NOT_FOUND.value());
