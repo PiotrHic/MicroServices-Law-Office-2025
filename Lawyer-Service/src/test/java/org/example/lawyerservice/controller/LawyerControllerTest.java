@@ -53,8 +53,7 @@ public class LawyerControllerTest {
     void testCreateLawyer() {
         String requestBody = """
                 {
-                  "name": "Harvey Specter"
-  
+                  "name": "PH"
                 }
                 """;
 
@@ -65,19 +64,19 @@ public class LawyerControllerTest {
                 .post("/api/lawyer")
                 .then()
                 .statusCode(201)
-                .body("name", equalTo("Harvey Specter"));
+                .body("name", equalTo("PH"));
     }
 
     @Test
     void testGetLawyerById() {
-        Lawyer lawyer = lawyerRepository.save(new Lawyer(null, "Mike Ross"));
+        Lawyer lawyer = lawyerRepository.save(new Lawyer(null, "PH"));
 
         given()
                 .when()
                 .get("/api/lawyer/getById/" + lawyer.getId())
                 .then()
                 .statusCode(200)
-                .body("name", equalTo("Mike Ross"));
+                .body("name", equalTo("PH"));
     }
 
     @Test

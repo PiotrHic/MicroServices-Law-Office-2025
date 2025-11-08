@@ -67,16 +67,18 @@ public class LawyerController {
 
     @PutMapping("/updateById/{lawyerId}")
     ResponseEntity<LawyerDTO> updateLawyerById(@PathVariable(NUMBER_VARIABLE_PATH) String lawyerId,
-                                               @Valid @RequestBody Lawyer lawyer) {
-        Lawyer updated = lawyerService.updateLawyerById(lawyerId, lawyer);
+                                               @Valid @RequestBody LawyerDTO lawyerDTO) {
+        Lawyer toUpdate = modelMapper.map(lawyerDTO, Lawyer.class);
+        Lawyer updated = lawyerService.updateLawyerById(lawyerId, toUpdate);
         LawyerDTO updatedDTO = modelMapper.map(updated, LawyerDTO.class);
         LOGGER.info("Lawyer: {} was updated by id to the database!", lawyerId);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
     @PutMapping("/updateByName") // ?lawyerName=
-    ResponseEntity<LawyerDTO> updateLawyerByName(@RequestParam String lawyerName,@Valid @RequestBody Lawyer lawyer){
-        Lawyer updated = lawyerService.updateLawyerByName(lawyerName, lawyer);
+    ResponseEntity<LawyerDTO> updateLawyerByName(@RequestParam String lawyerName,@Valid @RequestBody LawyerDTO lawyerDTO){
+        Lawyer toUpdate = modelMapper.map(lawyerDTO, Lawyer.class);
+        Lawyer updated = lawyerService.updateLawyerByName(lawyerName, toUpdate);
         LawyerDTO updatedDTO = modelMapper.map(updated, LawyerDTO.class);
         LOGGER.info("Lawyer: {} was updated by name to the database!", lawyerName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
