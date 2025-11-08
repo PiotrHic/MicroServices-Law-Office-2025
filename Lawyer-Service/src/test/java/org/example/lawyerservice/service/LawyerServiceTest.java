@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @ExtendWith(MockitoExtension.class)
-class LawyerServiceImplTest {
+class LawyerServiceTest {
 
     @Mock
     private LawyerRepository lawyerRepository;

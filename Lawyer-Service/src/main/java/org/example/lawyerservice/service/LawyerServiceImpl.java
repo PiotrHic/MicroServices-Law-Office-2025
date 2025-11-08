@@ -28,14 +28,14 @@ public class LawyerServiceImpl implements LawyerService{
     public Lawyer getLawyerByID(String id) {
         return lawyerRepository
                 .findLawyerById(id)
-                .orElseThrow(() -> new LawyerNotFoundException("Lawyer with id: " + id + " was not founded!"));
+                .orElseThrow(() -> new LawyerNotFoundException("Lawyer with id: " + id + " was not found!"));
     }
 
     @Override
     public Lawyer getLawyerByName(String name) {
         return lawyerRepository
                 .findLawyerByName(name)
-                .orElseThrow(() -> new LawyerNotFoundException("Lawyer with name: " + name + " was not founded!"));
+                .orElseThrow(() -> new LawyerNotFoundException("Lawyer with name: " + name + " was not found!"));
     }
 
     @Override
@@ -63,14 +63,14 @@ public class LawyerServiceImpl implements LawyerService{
     public Lawyer deleteLawyerById(String id) { // to implement
         return lawyerRepository
                 .deleteLawyerById(id)
-                .orElseThrow(() -> new LawyerNotFoundException("Lawyer with id: " + id + " was not founded!"));
+                .orElseThrow(() -> new LawyerNotFoundException("Lawyer with id: " + id + " was not found!"));
     }
 
     @Override
     public Lawyer deleteLawyerByName(String name) { // to implement
         return lawyerRepository
                 .deleteLawyerByName(name)
-                .orElseThrow(() -> new LawyerNotFoundException("Lawyer with name: " + name + " was not founded!"));
+                .orElseThrow(() -> new LawyerNotFoundException("Lawyer with name: " + name + " was not found!"));
     }
 
     @Override
