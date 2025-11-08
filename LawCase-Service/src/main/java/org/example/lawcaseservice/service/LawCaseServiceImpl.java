@@ -2,14 +2,12 @@ package org.example.lawcaseservice.service;
 
 import lombok.AllArgsConstructor;
 import org.example.lawcaseservice.domain.LawCase;
+import org.example.lawcaseservice.exception.LawCaseNotFoundException;
 import org.example.lawcaseservice.repository.LawCaseRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.example.lawyerservice.exception.LawyerNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -29,6 +27,13 @@ public class LawCaseServiceImpl implements LawCaseService {
         return lawCaseRepository
                 .findLawCaseById(id)
                 .orElseThrow(() -> new LawCaseNotFoundException("LawCase with id: " + id + " was not founded!"));
+    }
+
+    @Override
+    public LawCase getLawCaseByName(String name) {
+        return lawCaseRepository
+                .findLawCaseByName(name)
+                .orElseThrow(() -> new LawCaseNotFoundException("LawCase with name: " + name + " was not founded!"));
     }
 
     @Override
