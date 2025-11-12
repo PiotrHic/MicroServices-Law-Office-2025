@@ -121,32 +121,35 @@ class LawClientServiceTest {
                 -> lawClientService.deleteLawClientById("L1"));
     }
 
-    /*
+
     @Test
-    void deleteLawyerByName_ShouldReturnDeletedLawyer_WhenFound() {
-        when(lawyerRepository.deleteLawyerByName("John Doe")).thenReturn(Optional.of(lawyer));
+    void deleteLawClientByName_ShouldReturnDeletedLawClient_WhenFound() {
+        when(lawClientRepository.deleteLawClientByName("name"))
+                .thenReturn(Optional.of(lawClient));
 
-        Lawyer result = lawyerService.deleteLawyerByName("John Doe");
+        LawClient result = lawClientService.deleteLawClientByName("name");
 
-        assertEquals(lawyer, result);
-        verify(lawyerRepository).deleteLawyerByName("John Doe");
+        assertEquals(lawClient, result);
+        verify(lawClientRepository).deleteLawClientByName("name");
+    }
+
+
+
+    @Test
+    void deleteLawClientByName_ShouldThrowException_WhenNotFound() {
+        when(lawClientRepository.deleteLawClientByName("Unknown")).thenReturn(Optional.empty());
+
+        assertThrows(LawClientNotFoundException.class, () ->
+                lawClientService.deleteLawClientByName("Unknown"));
     }
 
     @Test
-    void deleteLawyerByName_ShouldThrowException_WhenNotFound() {
-        when(lawyerRepository.deleteLawyerByName("Unknown")).thenReturn(Optional.empty());
+    void deleteAlLawClients_ShouldReturnConfirmationMessage() {
+        String result = lawClientService.deleteAllLawClients();
 
-        assertThrows(LawyerNotFoundException.class, () -> lawyerService.deleteLawyerByName("Unknown"));
+        verify(lawClientRepository).deleteAll();
+        assertEquals("All LawClients were removed from database!", result);
     }
 
-    @Test
-    void deleteAlLawyers_ShouldReturnConfirmationMessage() {
-        String result = lawyerService.deleteAlLawyers();
-
-        verify(lawyerRepository).deleteAll();
-        assertEquals("All Lawyers were removed from database!", result);
-    }
-
-     */
 }
 
