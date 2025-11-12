@@ -20,8 +20,7 @@ public class LawyerServiceImpl implements LawyerService{
 
     @Override
     public Lawyer addLawyer(Lawyer lawyer) {
-        Lawyer added = lawyerRepository.save(lawyer);
-        return added;
+        return lawyerRepository.save(lawyer);
     }
 
     @Override
