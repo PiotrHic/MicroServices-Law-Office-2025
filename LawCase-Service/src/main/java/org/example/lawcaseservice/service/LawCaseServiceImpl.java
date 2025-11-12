@@ -55,6 +55,7 @@ public class LawCaseServiceImpl implements LawCaseService {
     @Override
     public LawCase updateLawCaseByName(String name, LawCase lawCase) {
         LawCase toUpdate = getLawCaseByName(name);
+        toUpdate.setName(lawCase.getName());
         toUpdate.setLawClient(lawCase.getLawClient());
         toUpdate.setLawClientId(lawCase.getLawClientId());
         toUpdate.setLawyer(lawCase.getLawyer());

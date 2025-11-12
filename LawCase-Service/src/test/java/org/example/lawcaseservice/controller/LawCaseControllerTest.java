@@ -129,7 +129,7 @@ class LawCaseControllerTest {
     }
 
 
-    // @Test
+    @Test
     void testUpdateLawCaseByName() {
 
         lawCaseRepository.save(new LawCase(null, "Civil Law Case"));
@@ -166,17 +166,17 @@ class LawCaseControllerTest {
 
     }
 
-    // @Test
+    @Test
     void testDeleteLawCaseByName() {
         lawCaseRepository.save(new LawCase(null, "Civil Law Case"));
 
         given()
-                .queryParam("lawyerName", "Piotr Hic")
+                .queryParam("lawCaseName", "Civil Law Case")
                 .when()
-                .delete("/api/lawyer/deleteByName")
+                .delete("/api/lawcase/deleteByName")
                 .then()
                 .statusCode(200)
-                .body("name", equalTo("Piotr Hic"));
+                .body("name", equalTo("Civil Law Case"));
     }
 
     @Test
