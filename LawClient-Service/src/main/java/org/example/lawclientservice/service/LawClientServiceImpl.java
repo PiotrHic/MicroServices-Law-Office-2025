@@ -2,6 +2,7 @@ package org.example.lawclientservice.service;
 
 import lombok.AllArgsConstructor;
 import org.example.lawclientservice.domain.LawClient;
+import org.example.lawclientservice.exception.LawClientNotFoundException;
 import org.example.lawclientservice.repository.LawClientRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +20,21 @@ public class LawClientServiceImpl implements LawClientService {
 
     @Override
     public LawClient getLawClientByID(String lawClientId) {
-        return null;
+        return lawClientRepository
+                .findLawClientById(lawClientId)
+                .orElseThrow(() -> new LawClientNotFoundException("LawCase with id: " + lawClientId + " was not found!"));
     }
 
     @Override
     public LawClient getLawClientByName(String name) {
-        return null;
+        return lawClientRepository
+                .findLawClientByName(name)
+                .orElseThrow(() -> new LawClientNotFoundException("LawCase with name: " + name + " was not found!"));
     }
 
     @Override
     public List<LawClient> getAllLawClients() {
-        return List.of();
+        return lawClientRepository.findAll();
     }
 
     @Override
