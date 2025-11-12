@@ -48,17 +48,23 @@ public class LawClientServiceImpl implements LawClientService {
     }
 
     @Override
-    public String deleteLawClientById(String lawClientId) {
-        return "";
+    public LawClient deleteLawClientById(String lawClientId) {
+        return lawClientRepository
+                .deleteLawClientById(lawClientId)
+                .orElseThrow(() -> new LawClientNotFoundException("LawClient with id: " + lawClientId + " was not found!"))
+        ;
     }
 
     @Override
-    public String deleteLawClientByName(String name) {
-        return "";
+    public LawClient deleteLawClientByName(String name) {
+        return lawClientRepository
+                .deleteLawClientByName(name)
+                .orElseThrow(() -> new LawClientNotFoundException("LawClient with name: " + name + " was not found!"));
     }
 
     @Override
     public String deleteAllLawClients() {
-        return "";
+        lawClientRepository.deleteAll();
+        return "All LawClients were removed from database!";
     }
 }

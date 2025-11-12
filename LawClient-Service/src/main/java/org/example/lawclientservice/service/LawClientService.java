@@ -19,8 +19,8 @@ public interface LawClientService {
     LawClient updateLawClientByName(String name, LawClient lawClient);
 
     // D
-    String deleteLawClientById(String lawClientId);
-    String deleteLawClientByName(String name);
+    LawClient deleteLawClientById(String lawClientId);
+    LawClient deleteLawClientByName(String name);
     String deleteAllLawClients();
 
 }
