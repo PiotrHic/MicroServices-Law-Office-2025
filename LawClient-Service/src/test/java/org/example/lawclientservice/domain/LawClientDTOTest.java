@@ -1,5 +1,6 @@
 package org.example.lawclientservice.domain;
 
+import org.example.lawclientservice.domain.DTO.LawClientDTO;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -9,9 +10,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LawClientTest {
+public class LawClientDTOTest {
 
-    static LawClient lawClient;
+    static LawClientDTO lawClient;
     static List<LawCase> lawCases;
     private static final String TEST_NAME = "TEST";
     private static final String TEST_ID_1 = "1";
@@ -19,7 +20,7 @@ public class LawClientTest {
 
     @BeforeAll
     public static void setUp() {
-        lawClient = LawClient
+        lawClient = LawClientDTO
                     .builder()
                     .id(TEST_ID_1)
                     .name(TEST_NAME)
@@ -63,5 +64,4 @@ public class LawClientTest {
         lawClient = null;
         lawCases = null;
     }
-
 }
