@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataMongoTest
 @Testcontainers
-class LawCaseRepositoryTest {
+class LawClientRepositoryTest {
 
     @Container
     static MongoDBContainer mongoDBContainer =
