@@ -5,10 +5,6 @@ import lombok.AllArgsConstructor;
 import org.example.lawcaseservice.domain.DTO.LawCaseDTO;
 import org.example.lawcaseservice.domain.LawCase;
 import org.example.lawcaseservice.service.LawCaseService;
-import org.example.lawyerservice.controller.LawyerController;
-import org.example.lawyerservice.domain.DTO.LawyerDTO;
-import org.example.lawyerservice.domain.Lawyer;
-import org.example.lawyerservice.service.LawyerService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +24,9 @@ public class LawCaseController {
     ModelMapper modelMapper;
 
     private static final Logger LOGGER
-            = LoggerFactory.getLogger(LawyerController.class);
+            = LoggerFactory.getLogger(LawCaseController.class);
 
-    private final String NUMBER_VARIABLE_PATH = "lawyCaseId";
+    private final String NUMBER_VARIABLE_PATH = "lawCaseId";
     private final String NAME_VARIABLE_PATH = "lawCaseName";
 
     @PostMapping
@@ -42,7 +38,7 @@ public class LawCaseController {
     }
 
     @GetMapping("/getById/{lawCaseId}")
-    ResponseEntity<LawCaseDTO> geteLawCaseById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId) {
+    ResponseEntity<LawCaseDTO> getLawCaseById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId) {
         LawCaseDTO foundedById = modelMapper.map(lawCaseService.getLawCaseById(lawCaseId),LawCaseDTO.class);
         LOGGER.info("LawCase: {} was founded by id in the database!", foundedById.getName());
         return new ResponseEntity<>(foundedById, HttpStatus.valueOf(200));

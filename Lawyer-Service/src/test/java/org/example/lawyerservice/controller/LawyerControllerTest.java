@@ -1,9 +1,6 @@
 package org.example.lawyerservice.controller;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
-import org.example.lawyerservice.domain.DTO.LawyerDTO;
 import org.example.lawyerservice.domain.Lawyer;
 import org.example.lawyerservice.repository.LawyerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,18 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.http.RequestEntity.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -53,7 +45,7 @@ public class LawyerControllerTest {
     void testCreateLawyer() {
         String requestBody = """
                 {
-                  "name": "PH"
+                  "name": "Piotr Hic"
                 }
                 """;
 
@@ -64,7 +56,7 @@ public class LawyerControllerTest {
                 .post("/api/lawyer")
                 .then()
                 .statusCode(201)
-                .body("name", equalTo("PH"));
+                .body("name", equalTo("Piotr Hic"));
     }
 
     @Test
@@ -154,7 +146,7 @@ public class LawyerControllerTest {
     @Test
     void testDeleteLawyerById() {
         // Arrange — insert a lawyer in test MongoDB
-        Lawyer lawyer = lawyerRepository.save(new Lawyer(null, "PH"));
+        Lawyer lawyer = lawyerRepository.save(new Lawyer(null, "Piotr Hic"));
 
         // Act + Assert — call DELETE endpoint
         given()
@@ -162,7 +154,7 @@ public class LawyerControllerTest {
                 .delete("/api/lawyer/deleteById/" + lawyer.getId())
                 .then()
                 .statusCode(200)
-                .body("name", equalTo("PH"));
+                .body("name", equalTo("Piotr Hic"));
 
     }
 

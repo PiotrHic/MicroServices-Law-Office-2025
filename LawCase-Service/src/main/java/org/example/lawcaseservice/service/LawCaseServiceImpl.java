@@ -26,14 +26,14 @@ public class LawCaseServiceImpl implements LawCaseService {
     public LawCase getLawCaseById(String id) {
         return lawCaseRepository
                 .findLawCaseById(id)
-                .orElseThrow(() -> new LawCaseNotFoundException("LawCase with id: " + id + " was not founded!"));
+                .orElseThrow(() -> new LawCaseNotFoundException("LawCase with id: " + id + " was not found!"));
     }
 
     @Override
     public LawCase getLawCaseByName(String name) {
         return lawCaseRepository
                 .findLawCaseByName(name)
-                .orElseThrow(() -> new LawCaseNotFoundException("LawCase with name: " + name + " was not founded!"));
+                .orElseThrow(() -> new LawCaseNotFoundException("LawCase with name: " + name + " was not found!"));
     }
 
     @Override
@@ -53,8 +53,8 @@ public class LawCaseServiceImpl implements LawCaseService {
     }
 
     @Override
-    public LawCase updateLawCaseByName(String id, LawCase lawCase) {
-        LawCase toUpdate = getLawCaseById(id);
+    public LawCase updateLawCaseByName(String name, LawCase lawCase) {
+        LawCase toUpdate = getLawCaseByName(name);
         toUpdate.setLawClient(lawCase.getLawClient());
         toUpdate.setLawClientId(lawCase.getLawClientId());
         toUpdate.setLawyer(lawCase.getLawyer());
@@ -66,14 +66,14 @@ public class LawCaseServiceImpl implements LawCaseService {
     public LawCase deleteLawCaseById(String id) {
         return lawCaseRepository
                 .deleteLawCaseById(id)
-                .orElseThrow(() -> new LawyerNotFoundException("LawCase with id: " + id + " was not founded!"));
+                .orElseThrow(() -> new LawyerNotFoundException("LawCase with id: " + id + " was not found!"));
     }
 
     @Override
     public LawCase deleteLawCaseByName(String name) {
         return lawCaseRepository
                 .deleteLawCaseByName(name)
-                .orElseThrow(() -> new LawyerNotFoundException("LawCase with name: " + name + " was not founded!"));
+                .orElseThrow(() -> new LawyerNotFoundException("LawCase with name: " + name + " was not found!"));
     }
 
     @Override

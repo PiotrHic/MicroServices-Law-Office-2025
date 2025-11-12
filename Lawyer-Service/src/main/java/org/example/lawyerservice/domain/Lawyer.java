@@ -23,7 +23,7 @@ public class Lawyer {
     @Id
     private String id;
     @NotBlank(message = "Name is required!")
-    @Size(min=4, message = "name must have at least 4 characters!")
+    @Size(min=4, message = "Name must have at least 4 characters!")
     private String name;
     private int yearsOfExperience;
     private List<LawCase> lawCaseList; // for later

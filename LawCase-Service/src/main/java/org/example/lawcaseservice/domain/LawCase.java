@@ -1,7 +1,10 @@
 package org.example.lawcaseservice.domain;
 
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -18,14 +21,17 @@ public class LawCase {
         this.name = name;
     }
 
+    @Id
     private String id;
+    @NotBlank(message = "Name is required!")
+    @Size(min=4, message = "Name of the case must have at least 4 characters!")
     private String name;
-    private Integer lawyerId;
-    private Integer LawClientId;
+    private String lawyerId;
+    private String LawClientId;
     private Lawyer lawyer;
     private LawClient lawClient;
 
-    public LawCase(String name, Integer lawyerId, Integer lawClientId, Lawyer lawyer, LawClient lawClient) {
+    public LawCase(String name, String lawyerId, String lawClientId, Lawyer lawyer, LawClient lawClient) {
         this.name = name;
         this.lawyerId = lawyerId;
         LawClientId = lawClientId;
