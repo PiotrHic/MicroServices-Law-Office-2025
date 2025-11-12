@@ -1,5 +1,7 @@
 package org.example.lawclientservice.repository;
 
+import org.example.lawclientservice.domain.LawCase;
+import org.example.lawclientservice.domain.LawClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,11 +33,14 @@ class LawClientRepositoryTest {
     }
 
     @Autowired
-    private LawyerRepository lawyerRepository;
+    private LawClientRepository lawClientRepository;
+
+    LawClient first;
 
     @BeforeEach
     void setUp(){
-        lawyerRepository.deleteAll();
+        lawClientRepository.deleteAll();
+        first = new LawClient("1","name");
     }
 
     @Test
@@ -49,22 +54,21 @@ class LawClientRepositoryTest {
     @DisplayName("FindById Test")
     void getLawyerByIdTest(){
         String generatedID = UUID.randomUUID().toString();
-        Lawyer first = new Lawyer(generatedID, "First Lawyer");
-        lawyerRepository.save(first);
-        Lawyer founded = lawyerRepository.findById(generatedID)
-                .orElseThrow(() -> new AssertionError("Lawyer not found"));
+        first.setId(generatedID);
+        lawClientRepository.save(first);
+        LawClient founded = lawClientRepository.findById(generatedID)
+                .orElseThrow(() -> new AssertionError("LawCase not found by id"));
         assertNotNull(founded);
     }
 
     @Test
     @DisplayName("FindByName Test")
     void getLawyerByNameTest(){
-        String generatedID = UUID.randomUUID().toString();
-        String name = "First Lawyer";
-        Lawyer first = new Lawyer(generatedID, name);
-        lawyerRepository.save(first);
-        Lawyer founded = lawyerRepository.findLawyerByName(name)
-                .orElseThrow(() -> new AssertionError("Lawyer not found"));
+        String name = "First LawCase";
+        first.setName(name);
+        lawClientRepository.save(first);
+        LawClient founded = lawClientRepository.findLawClientByName(name)
+                .orElseThrow(() -> new AssertionError("LawCase not found by nmae"));
         assertNotNull(founded);
     }
 
@@ -72,35 +76,37 @@ class LawClientRepositoryTest {
     @DisplayName("DeleteById Test")
     void deleteLawyerById(){
         String generatedID = UUID.randomUUID().toString();
-        String name1 = "First Lawyer";
-        Lawyer first = new Lawyer(generatedID, name1);
-        lawyerRepository.save(first);
-        int repository_size = lawyerRepository.findAll().size();
+        String name1 = "First LawCase";
+        first = new LawClient(generatedID, name1);
+        int repository_size = lawClientRepository.findAll().size();
+        assertThat(repository_size).isZero();
+        lawClientRepository.save(first);
+        repository_size = lawClientRepository.findAll().size();
         assertThat(repository_size).isOne();
-        Lawyer deleted = lawyerRepository.deleteLawyerById(generatedID)
-                .orElseThrow(() -> new AssertionError("Lawyer not found"));
+        LawClient deleted = lawClientRepository.deleteLawClientById(generatedID)
+                .orElseThrow(() -> new AssertionError("LawCase not found by id"));
         assertNotNull(deleted);
-        repository_size = lawyerRepository.findAll().size();
+        repository_size = lawClientRepository.findAll().size();
         assertThat(repository_size).isZero();
 
     };
-
 
     @Test
     @DisplayName("DeleteByName Test")
     void deleteByName(){
         String generatedID = UUID.randomUUID().toString();
-        String name1 = "First Lawyer";
-        Lawyer first = new Lawyer(generatedID, name1);
-        int repository_size = lawyerRepository.findAll().size();
+        String name1 = "First LawCase";
+        first = new LawClient(generatedID, name1);
+        int repository_size = lawClientRepository.findAll().size();
         assertThat(repository_size).isZero();
-        lawyerRepository.save(first);
-        repository_size = lawyerRepository.findAll().size();
+        lawClientRepository.save(first);
+        repository_size = lawClientRepository.findAll().size();
         assertThat(repository_size).isOne();
-        Lawyer deleted = lawyerRepository.deleteLawyerByName(name1)
-                .orElseThrow(() -> new AssertionError("Lawyer not found"));
+        LawClient deleted = lawClientRepository.deleteLawClientByName(name1)
+                .orElseThrow(() -> new AssertionError("LawCase not found by name"));
         assertNotNull(deleted);
-        repository_size = lawyerRepository.findAll().size();
+        repository_size = lawClientRepository.findAll().size();
         assertThat(repository_size).isZero();
     }
+
 }

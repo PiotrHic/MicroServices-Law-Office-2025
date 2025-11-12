@@ -17,6 +17,11 @@ import java.util.List;
 @Document(collection = "LawClients")
 public class LawClient {
 
+    public LawClient(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     @Id
     private String id;
     @NotBlank(message = "Name is required!")
