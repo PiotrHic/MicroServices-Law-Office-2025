@@ -108,5 +108,14 @@ public class LawClientController {
         return new ResponseEntity<>("Database is empty", HttpStatus.OK);
     }
 
+    // WebClient methods
+
+    //LawCase
+
+    @GetMapping("forLawCase/{lawClientId}")
+    public LawClient findLawClientByLawClientId(@PathVariable("lawClientId") String lawClientId){
+        return lawClientService.getLawClientByID(lawClientId);
+    }
+
 
 }

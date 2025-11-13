@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -108,10 +109,12 @@ public class LawyerController {
         return new ResponseEntity<>("Database is empty", HttpStatus.OK);
     }
 
-    // WebClient merhods
+    // WebClient methods
 
     @GetMapping("toBringLawyer/" + "{lawyerId}")
     public Lawyer findLawyerByLawyerId(@PathVariable(NAME_VARIABLE_PATH) String lawyerId){
         return lawyerService.getLawyerByID(lawyerId);
     };
+
+
 }

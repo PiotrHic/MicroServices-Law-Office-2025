@@ -129,6 +129,8 @@ public class LawCaseController {
 
     // WebClient merhods
 
+    // Lawyer-Service
+
     @GetMapping("/forLawClient-withLawyer/{lawClientId}")
     public List<LawCase> findLawCaseWithLawyerByLawClientId(@PathVariable("lawClientId") String lawClientId){
         List<LawCase> lawCases = findLawCaseByLawClientId(lawClientId);
@@ -139,7 +141,7 @@ public class LawCaseController {
         return lawCases;
     }
 
-    @GetMapping("forLawClient/{lawClientId}")
+    @GetMapping("/forLawClient/{lawClientId}")
     public List<LawCase> findLawCaseByLawClientId(@PathVariable("lawClientId") String lawClientId){
         List<LawCase> lawCases
                 = lawCaseService.getAllLawCases();
@@ -147,5 +149,21 @@ public class LawCaseController {
                 .stream()
                 .filter(lawCase -> lawCase.getLawClientId().equals(lawClientId))
                 .toList();
+    }
+
+    // LawClient-Service
+
+    @GetMapping("/toBringLawClient/{lawClientId}")
+    public LawCase findLawClientForLawCase(@PathVariable("lawClientId") String lawClientId){
+        List<LawCase> lawCases
+                = lawCaseService.getAllLawCases();
+
+        LawCase founded = lawCases.stream()
+                .filter(lawCase -> lawCase.getLawClientId().equals(lawClientId))
+                .findFirst()
+                .orElseThrow();
+
+        founded.setLawClient(lawClientClient.findLawClientByLawClientId(lawClientId));
+        return founded;
     }
 }
