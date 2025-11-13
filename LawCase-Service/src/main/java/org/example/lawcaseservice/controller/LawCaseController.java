@@ -1,10 +1,16 @@
 package org.example.lawcaseservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.example.lawcaseservice.client.LawClientClient;
+import org.example.lawcaseservice.client.LawyerClient;
 import org.example.lawcaseservice.domain.DTO.LawCaseDTO;
 import org.example.lawcaseservice.domain.LawCase;
 import org.example.lawcaseservice.service.LawCaseService;
+import org.example.lawyerservice.exception.LawyerNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -22,6 +29,9 @@ public class LawCaseController {
     private final LawCaseService lawCaseService;
 
     ModelMapper modelMapper;
+
+    private LawyerClient lawyerClient;
+    private LawClientClient lawClientClient;
 
     private static final Logger LOGGER
             = LoggerFactory.getLogger(LawCaseController.class);
@@ -102,5 +112,40 @@ public class LawCaseController {
         lawCaseService.deleteAllLawCases();
         LOGGER.info("Database is empty");
         return new ResponseEntity<>("Database is empty", HttpStatus.OK);
+    }
+
+    // WebClient Lawyer methods
+
+    @GetMapping("/toBringLawyer/{lawyerId}")
+    public LawCase findLawyerByLawyerId(@PathVariable("lawyerId") String lawyerId) {
+        LawCase founded = lawCaseService
+                .getAllLawCases()
+                .stream()
+                .filter(lawCase -> lawCase.getLawyerId()
+                        .equals(lawyerId)).findFirst().orElseThrow();
+        founded.setLawyer(lawyerClient.findLawyerByLawyerId(lawyerId));
+        return founded;
+    }
+
+    // WebClient merhods
+
+    @GetMapping("/forLawClient-withLawyer/{lawClientId}")
+    public List<LawCase> findLawCaseWithLawyerByLawClientId(@PathVariable("lawClientId") String lawClientId){
+        List<LawCase> lawCases = findLawCaseByLawClientId(lawClientId);
+        lawCases
+                .forEach(lawCase -> lawCase.setLawyer
+                        (lawyerClient.findLawyerByLawyerId
+                                (lawCase.getLawyerId())));
+        return lawCases;
+    }
+
+    @GetMapping("forLawClient/{lawClientId}")
+    public List<LawCase> findLawCaseByLawClientId(@PathVariable("lawClientId") String lawClientId){
+        List<LawCase> lawCases
+                = lawCaseService.getAllLawCases();
+        return lawCases
+                .stream()
+                .filter(lawCase -> lawCase.getLawClientId().equals(lawClientId))
+                .toList();
     }
 }

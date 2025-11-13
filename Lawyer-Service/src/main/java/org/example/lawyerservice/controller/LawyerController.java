@@ -1,5 +1,8 @@
 package org.example.lawyerservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.lawyerservice.domain.DTO.LawyerDTO;
@@ -104,4 +107,11 @@ public class LawyerController {
         LOGGER.info("Database is empty");
         return new ResponseEntity<>("Database is empty", HttpStatus.OK);
     }
+
+    // WebClient merhods
+
+    @GetMapping("toBringLawyer/" + "{lawyerId}")
+    public Lawyer findLawyerByLawyerId(@PathVariable(NAME_VARIABLE_PATH) String lawyerId){
+        return lawyerService.getLawyerByID(lawyerId);
+    };
 }
