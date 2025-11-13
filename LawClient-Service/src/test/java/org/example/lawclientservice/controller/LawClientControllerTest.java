@@ -1,5 +1,6 @@
 package org.example.lawclientservice.controller;
 
+import io.restassured.RestAssured;
 import org.example.lawclientservice.repository.LawClientRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -36,11 +38,25 @@ public class LawClientControllerTest {
     void setup() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
-        lawyerRepository.deleteAll();
+        lawClientRepository.deleteAll();
     }
 
     @Test
     void testCreateLawClient() {
+        String requestBody = """
+                {
+                  "name": "Piotr Hic"
+                }
+                """;
+
+        given()
+                .contentType("application/json")
+                .body(requestBody)
+                .when()
+                .post("/api/lawclient")
+                .then()
+                .statusCode(201)
+                .body("name", equalTo("Piotr Hic"));
     }
 
     @Test

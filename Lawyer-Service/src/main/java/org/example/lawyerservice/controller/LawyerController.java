@@ -1,6 +1,5 @@
 package org.example.lawyerservice.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.lawyerservice.domain.DTO.LawyerDTO;
