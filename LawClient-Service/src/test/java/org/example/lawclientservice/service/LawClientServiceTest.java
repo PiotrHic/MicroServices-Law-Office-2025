@@ -100,6 +100,32 @@ class LawClientServiceTest {
         verify(lawClientRepository).findAll();
     }
 
+    // ---------- UPDATE ----------
+    @Test
+    void updateLawClientById_ShouldUpdateFields() {
+        LawClient updated = new LawClient();
+        updated.setName("Updated Name");
+
+        when(lawClientRepository.findLawClientById("1")).thenReturn(Optional.of(lawClient));
+
+        LawClient result = lawClientService.updateLawClientById("1", updated);
+
+        assertEquals("Updated Name", result.getName());
+        verify(lawClientRepository).findLawClientById("1");
+    }
+
+    @Test
+    void updateLawClientByName_ShouldUpdateFields() {
+        LawClient updated = new LawClient();
+        updated.setName("Updated Name");
+
+        when(lawClientRepository.findLawClientByName("name")).thenReturn(Optional.of(lawClient));
+
+        LawClient result = lawClientService.updateLawClientByName("name", updated);
+
+        assertEquals("Updated Name", result.getName());
+        verify(lawClientRepository).findLawClientByName("name");
+    }
     // ---------- DELETE ----------
     @Test
     void deleteLawClientById_ShouldReturnDeletedLawClient_WhenFound() {
@@ -110,8 +136,6 @@ class LawClientServiceTest {
         assertEquals(lawClient, result);
         verify(lawClientRepository).deleteLawClientById("L1");
     }
-
-
 
     @Test
     void deleteLawClientById_ShouldThrowException_WhenNotFound() {

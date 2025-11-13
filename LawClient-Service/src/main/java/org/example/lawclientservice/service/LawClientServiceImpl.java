@@ -22,14 +22,14 @@ public class LawClientServiceImpl implements LawClientService {
     public LawClient getLawClientByID(String lawClientId) {
         return lawClientRepository
                 .findLawClientById(lawClientId)
-                .orElseThrow(() -> new LawClientNotFoundException("LawCase with id: " + lawClientId + " was not found!"));
+                .orElseThrow(() -> new LawClientNotFoundException("LawClient with id: " + lawClientId + " was not found!"));
     }
 
     @Override
     public LawClient getLawClientByName(String name) {
         return lawClientRepository
                 .findLawClientByName(name)
-                .orElseThrow(() -> new LawClientNotFoundException("LawCase with name: " + name + " was not found!"));
+                .orElseThrow(() -> new LawClientNotFoundException("LawClient with name: " + name + " was not found!"));
     }
 
     @Override
@@ -39,12 +39,18 @@ public class LawClientServiceImpl implements LawClientService {
 
     @Override
     public LawClient updateLawClientById(String lawClientId, LawClient lawClient) {
-        return null;
+        LawClient toUpdate = getLawClientByID(lawClientId);
+        toUpdate.setName(lawClient.getName());
+        toUpdate.setLawCaseList(lawClient.getLawCaseList());
+        return toUpdate;
     }
 
     @Override
     public LawClient updateLawClientByName(String name, LawClient lawClient) {
-        return null;
+        LawClient toUpdate = getLawClientByName(name);
+        toUpdate.setName(lawClient.getName());
+        toUpdate.setLawCaseList(lawClient.getLawCaseList());
+        return toUpdate;
     }
 
     @Override
