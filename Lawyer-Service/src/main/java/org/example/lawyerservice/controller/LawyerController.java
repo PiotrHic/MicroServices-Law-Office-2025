@@ -113,17 +113,23 @@ public class LawyerController {
 
     // WebClient methods
 
-
     // LawCase
     @GetMapping("/toBringLawyer/{lawyerId}")
     public Lawyer findLawyerByLawyerId(@PathVariable(NAME_VARIABLE_PATH) String lawyerId){
         return lawyerService.getLawyerByID(lawyerId);
-    };
+    }
 
     @GetMapping("/forLawCases/{lawyerId}")
     public Lawyer findLawCaseByLawyerId(@PathVariable("lawyerId") String lawyerId){
         Lawyer founded = lawyerService.getLawyerByID(lawyerId);
         founded.setLawCaseList(lawCaseClient.findLawCaseByLawyerId(lawyerId));
+        return founded;
+    }
+
+    @GetMapping("/forLawCases-withLawClient/{lawyerId}")
+    public Lawyer findLawCaseWithLawClientsByLawyerId(@PathVariable("lawyerId") String lawyerId){
+        Lawyer founded = lawyerService.getLawyerByID(lawyerId);
+        founded.setLawCaseList(lawCaseClient.findLawCaseWithLawClientsByLawyerId(lawyerId));
         return founded;
     };
 }

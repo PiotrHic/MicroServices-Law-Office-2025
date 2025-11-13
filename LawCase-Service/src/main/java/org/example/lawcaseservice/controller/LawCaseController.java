@@ -114,32 +114,36 @@ public class LawCaseController {
         return new ResponseEntity<>("Database is empty", HttpStatus.OK);
     }
 
-    // WebClient Lawyer methods
+    // WebClient methods
 
-    @GetMapping("/toBringLawyer/{lawyerId}")
-    public LawCase findLawyerByLawyerId(@PathVariable("lawyerId") String lawyerId) {
-        LawCase founded = lawCaseService
-                .getAllLawCases()
-                .stream()
-                .filter(lawCase -> lawCase.getLawyerId()
-                        .equals(lawyerId)).findFirst().orElseThrow();
-        founded.setLawyer(lawyerClient.findLawyerByLawyerId(lawyerId));
-        return founded;
-    }
 
-    // WebClient merhods
+
 
     // Lawyer-Service
 
-    @GetMapping("/forLawClient-withLawyer/{lawClientId}")
-    public List<LawCase> findLawCaseWithLawyerByLawClientId(@PathVariable("lawClientId") String lawClientId){
-        List<LawCase> lawCases = findLawCaseByLawClientId(lawClientId);
-        lawCases
-                .forEach(lawCase -> lawCase.setLawyer
-                        (lawyerClient.findLawyerByLawyerId
-                                (lawCase.getLawyerId())));
-        return lawCases;
+    @GetMapping("forLawyer/{lawyerId}")
+    public List<LawCase> findLawCaseByLawyerId(@PathVariable("lawyerId") String lawyerId) {
+        List<LawCase> lawCases
+                = lawCaseService.getAllLawCases();
+        List<LawCase> lawCasesToSend = lawCases
+                .stream()
+                .filter(lawCase -> lawCase.getLawyerId().equals(lawyerId))
+                .toList();
+        return lawCasesToSend;
     }
+
+    @GetMapping("forLawyer-withLawClient/{lawyerId}")
+    public List<LawCase> findLawCaseWithLawClientsByLawyerId(@PathVariable("lawyerId") String lawyerId){
+        List<LawCase> lawCasesToSend = findLawCaseByLawyerId(lawyerId);
+        lawCasesToSend
+                .forEach(lawCase ->
+                        lawCase.setLawClient
+                                (lawClientClient.findLawClientByLawClientId
+                                        (lawCase.getLawClientId())));
+        return lawCasesToSend;
+    }
+
+    // LawClient-Service
 
     @GetMapping("/forLawClient/{lawClientId}")
     public List<LawCase> findLawCaseByLawClientId(@PathVariable("lawClientId") String lawClientId){
@@ -151,9 +155,20 @@ public class LawCaseController {
                 .toList();
     }
 
+    v
 
+    // To get from another services
 
-    // LawClient-Service
+    @GetMapping("/toBringLawyer/{lawyerId}")
+    public LawCase findLawyerByLawyerId(@PathVariable("lawyerId") String lawyerId) {
+        LawCase founded = lawCaseService
+                .getAllLawCases()
+                .stream()
+                .filter(lawCase -> lawCase.getLawyerId()
+                        .equals(lawyerId)).findFirst().orElseThrow();
+        founded.setLawyer(lawyerClient.findLawyerByLawyerId(lawyerId));
+        return founded;
+    }
 
     @GetMapping("/toBringLawClient/{lawClientId}")
     public LawCase findLawClientForLawCase(@PathVariable("lawClientId") String lawClientId){
