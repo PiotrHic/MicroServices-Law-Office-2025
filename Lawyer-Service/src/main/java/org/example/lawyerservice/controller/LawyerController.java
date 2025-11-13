@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.example.lawyerservice.client.LawCaseClient;
 import org.example.lawyerservice.domain.DTO.LawyerDTO;
 import org.example.lawyerservice.domain.Lawyer;
 import org.example.lawyerservice.service.LawyerService;
@@ -23,6 +24,7 @@ import java.util.Set;
 public class LawyerController {
 
     private final LawyerService lawyerService;
+    private final LawCaseClient lawCaseClient;
 
     ModelMapper modelMapper;
 
@@ -111,10 +113,17 @@ public class LawyerController {
 
     // WebClient methods
 
-    @GetMapping("toBringLawyer/" + "{lawyerId}")
+
+    // LawCase
+    @GetMapping("/toBringLawyer/{lawyerId}")
     public Lawyer findLawyerByLawyerId(@PathVariable(NAME_VARIABLE_PATH) String lawyerId){
         return lawyerService.getLawyerByID(lawyerId);
     };
 
-
+    @GetMapping("/forLawCases/{lawyerId}")
+    public Lawyer findLawCaseByLawyerId(@PathVariable("lawyerId") String lawyerId){
+        Lawyer founded = lawyerService.getLawyerByID(lawyerId);
+        founded.setLawCaseList(lawCaseClient.findLawCaseByLawyerId(lawyerId));
+        return founded;
+    };
 }
