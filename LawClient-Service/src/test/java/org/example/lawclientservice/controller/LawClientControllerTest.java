@@ -100,13 +100,47 @@ public class LawClientControllerTest {
 
     @Test
     void testUpdateLawClientById() {
+        // Arrange: Insert a lawyer
+        LawClient lawClient = lawClientRepository.save(new LawClient(null, "Old Name"));
 
+        String updateRequest = """
+            {
+              "name": "New Name"
+            }
+            """;
+
+        // Act + Assert
+        given()
+                .contentType("application/json")
+                .body(updateRequest)
+                .when()
+                .put("/api/lawclient/updateById/" + lawClient.getId())
+                .then()
+                .statusCode(200)
+                .body("name", equalTo("New Name"));
     }
 
 
     @Test
     void testUpdateLawClientByName() {
+        // Arrange
+        lawClientRepository.save(new LawClient(null, "Piotr Hic"));
 
+        String updateRequest = """
+            {
+              "name": "New Name"
+            }
+            """;
+
+        given()
+                .contentType("application/json")
+                .queryParam("lawClientName", "Piotr Hic")
+                .body(updateRequest)
+                .when()
+                .put("/api/lawclient/updateByName")
+                .then()
+                .statusCode(200)
+                .body("name", equalTo("New Name"));
     }
 
     @Test

@@ -64,5 +64,23 @@ public class LawClientController {
         return new ResponseEntity<>(lawClientsDTOs, HttpStatus.valueOf(200));
     }
 
+    @PutMapping("/updateById/{lawClientId}")
+    ResponseEntity<LawClientDTO> updateLawClientById(@PathVariable(NUMBER_VARIABLE_PATH) String lawClientId,
+                                               @Valid @RequestBody LawClientDTO lawClientDTO) {
+        LawClient toUpdate = modelMapper.map(lawClientDTO, LawClient.class);
+        LawClient updated = lawClientService.updateLawClientById(lawClientId, toUpdate);
+        LawClientDTO updatedDTO = modelMapper.map(updated, LawClientDTO.class);
+        LOGGER.info("LawClient: {} was updated by id to the database!", lawClientId);
+        return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
+    }
+
+    @PutMapping("/updateByName") // ?lawyerName=
+    ResponseEntity<LawClientDTO> updateLawClientByName(@RequestParam String lawClientName,@Valid @RequestBody LawClientDTO lawClientDTO){
+        LawClient toUpdate = modelMapper.map(lawClientDTO, LawClient.class);
+        LawClient updated = lawClientService.updateLawClientByName(lawClientName, toUpdate);
+        LawClientDTO updatedDTO = modelMapper.map(updated, LawClientDTO.class);
+        LOGGER.info("LawClient: {} was updated by name to the database!", lawClientName);
+        return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
+    }
 
 }
