@@ -155,8 +155,6 @@ public class LawCaseController {
                 .toList();
     }
 
-    v
-
     // To get from another services
 
     @GetMapping("/toBringLawyer/{lawyerId}")

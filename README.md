@@ -12,6 +12,7 @@ Functionalities:
 - Exception Handler
 - Build automation
 - Validation 
+- API-Gateway
 
 Technologies:
 - Testcontainers
