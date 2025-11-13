@@ -1,6 +1,7 @@
 package org.example.lawcaseservice.config;
 
 
+import org.example.lawcaseservice.client.LawyerClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancedExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;

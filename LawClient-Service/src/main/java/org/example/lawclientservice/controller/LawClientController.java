@@ -2,6 +2,7 @@ package org.example.lawclientservice.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.example.lawclientservice.client.LawCaseClient;
 import org.example.lawclientservice.domain.DTO.LawClientDTO;
 import org.example.lawclientservice.domain.LawClient;
 import org.example.lawclientservice.service.LawClientService;
@@ -28,6 +29,8 @@ public class LawClientController {
 
     private final String NUMBER_VARIABLE_PATH = "lawClientId";
     private final String NAME_VARIABLE_PATH = "lawClientName";
+
+    private final LawCaseClient lawCaseClient;
 
     @PostMapping
     ResponseEntity<LawClientDTO> createLawClient(@Valid @RequestBody LawClientDTO lawClientDTO){
@@ -115,6 +118,13 @@ public class LawClientController {
     @GetMapping("forLawCase/{lawClientId}")
     public LawClient findLawClientByLawClientId(@PathVariable("lawClientId") String lawClientId){
         return lawClientService.getLawClientByID(lawClientId);
+    }
+
+    @GetMapping("/toBringLawCase/" + "{lawClientId}")
+    public LawClient findLawCaseByLawClientId(@PathVariable("lawClientId") String lawClientId){
+        LawClient founded = lawClientService.getLawClientByID(lawClientId);
+        founded.setLawCaseList(lawCaseClient.findLawCaseByLawClientId(lawClientId));
+        return founded;
     }
 
 
