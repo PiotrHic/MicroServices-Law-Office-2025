@@ -10,10 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -36,6 +35,33 @@ public class LawClientController {
         LOGGER.info("LawClient: {} was added tp the database!", added.getName());
         return new ResponseEntity<>(modelMapper.map(added,LawClientDTO.class),
                 HttpStatus.valueOf(201));
+    }
+
+    @GetMapping("/getById/{lawClientId}")
+    ResponseEntity<LawClientDTO> getLawClientById(@PathVariable(NUMBER_VARIABLE_PATH) String lawClientId) {
+        LawClientDTO foundedById = modelMapper.map(lawClientService.getLawClientByID(lawClientId),LawClientDTO.class);
+        LOGGER.info("LawClient: {} was founded by id in the database!", foundedById.getName());
+        return new ResponseEntity<>(foundedById, HttpStatus.valueOf(200));
+    }
+
+    @GetMapping("/getByName") // ?lawyerName=
+    ResponseEntity<LawClientDTO> getLawClientByName(@RequestParam(NAME_VARIABLE_PATH) String lawClientName) {
+        LawClientDTO foundedByName = modelMapper.map(lawClientService.getLawClientByName(lawClientName),LawClientDTO.class);
+        LOGGER.info("LawClient: {} was founded by name in the database!", foundedByName.getName());
+        return new ResponseEntity<>(foundedByName, HttpStatus.valueOf(200));
+    }
+
+    @GetMapping("/getAllLawClients")
+    ResponseEntity<List<LawClientDTO>> getAllLawClients() {
+        List<LawClient> lawClients = lawClientService.getAllLawClients();
+        if (lawClients.isEmpty()) {
+            throw new LayerInstantiationException("There is no law clients in the database!");
+        }
+        LOGGER.info("All law clients were founded!");
+        List<LawClientDTO> lawClientsDTOs = lawClients.stream()
+                .map(lawClient -> modelMapper.map(lawClient,LawClientDTO.class))
+                .toList();
+        return new ResponseEntity<>(lawClientsDTOs, HttpStatus.valueOf(200));
     }
 
 

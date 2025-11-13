@@ -1,6 +1,7 @@
 package org.example.lawclientservice.controller;
 
 import io.restassured.RestAssured;
+import org.example.lawclientservice.domain.LawClient;
 import org.example.lawclientservice.repository.LawClientRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,15 +62,40 @@ public class LawClientControllerTest {
 
     @Test
     void testGetLawClientById() {
+        LawClient lawClient = lawClientRepository.save(new LawClient(null, "Piotr Hic"));
 
+        given()
+                .when()
+                .get("/api/lawclient/getById/" + lawClient.getId())
+                .then()
+                .statusCode(200)
+                .body("name", equalTo("Piotr Hic"));
     }
 
     @Test
     void testGetLawClientByName() {
+        lawClientRepository.save(new LawClient(null, "Piotr Hic"));
+
+        given()
+                .queryParam("lawClientName", "Piotr Hic")
+                .when()
+                .get("/api/lawclient/getByName")
+                .then()
+                .statusCode(200)
+                .body("name", equalTo("Piotr Hic"));
     }
 
     @Test
     void testGetAllLawClients() {
+        lawClientRepository.save(new LawClient(null, "Piotr Hic1"));
+        lawClientRepository.save(new LawClient(null, "Piotr Hic2"));
+
+        given()
+                .when()
+                .get("/api/lawclient/getAllLawClients")
+                .then()
+                .statusCode(200)
+                .body("size()", equalTo(2));
     }
 
     @Test

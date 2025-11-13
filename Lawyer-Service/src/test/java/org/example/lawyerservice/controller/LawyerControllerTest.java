@@ -95,7 +95,6 @@ public class LawyerControllerTest {
                 .then()
                 .statusCode(200)
                 .body("size()", equalTo(2));
-
     }
 
     @Test
