@@ -127,5 +127,12 @@ public class LawClientController {
         return founded;
     }
 
+    //LawCase with Law Client
 
+    @GetMapping("/toBringLawCase-withLawyer/" + "{lawClientId}")
+    public LawClient findLawCaseWithLawyersByLawClientId(@PathVariable("lawClientId") String lawClientId){
+        LawClient founded = lawClientService.getLawClientByID(lawClientId);
+        founded.setLawCaseList(lawCaseClient.findLawCaseWithLawyerByLawClientId(lawClientId));
+        return founded;
+    }
 }
