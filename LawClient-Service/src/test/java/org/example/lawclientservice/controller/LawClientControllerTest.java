@@ -145,17 +145,46 @@ public class LawClientControllerTest {
 
     @Test
     void testDeleteLawClientById() {
+        // Arrange — insert a lawyer in test MongoDB
+        LawClient lawClient = lawClientRepository.save(new LawClient(null, "Piotr Hic"));
+
+        // Act + Assert — call DELETE endpoint
+        given()
+                .when()
+                .delete("/api/lawclient/deleteById/" + lawClient.getId())
+                .then()
+                .statusCode(200)
+                .body("name", equalTo("Piotr Hic"));
 
     }
 
     @Test
     void testDeleteLawClientByName() {
+        lawClientRepository.save(new LawClient(null, "Piotr Hic"));
 
+        given()
+                .queryParam("lawClientName", "Piotr Hic")
+                .when()
+                .delete("/api/lawclient/deleteByName")
+                .then()
+                .statusCode(200)
+                .body("name", equalTo("Piotr Hic"));
     }
 
     @Test
     void testDeleteAllLawClients() {
+        lawClientRepository.save(new LawClient(null, "Piotr Hic1"));
+        lawClientRepository.save(new LawClient(null, "Piotr Hic2"));
 
+        given()
+                .when()
+                .delete("/api/lawclient/deleteAll")
+                .then()
+                .statusCode(200)
+                .body(equalTo("Database is empty"));
+
+        // verify DB is empty
+        assert(lawClientRepository.count() == 0);
     }
 
     @Test

@@ -75,12 +75,38 @@ public class LawClientController {
     }
 
     @PutMapping("/updateByName") // ?lawyerName=
-    ResponseEntity<LawClientDTO> updateLawClientByName(@RequestParam String lawClientName,@Valid @RequestBody LawClientDTO lawClientDTO){
+    ResponseEntity<LawClientDTO> updateLawClientByName(@RequestParam String lawClientName,@Valid
+    @RequestBody LawClientDTO lawClientDTO){
         LawClient toUpdate = modelMapper.map(lawClientDTO, LawClient.class);
         LawClient updated = lawClientService.updateLawClientByName(lawClientName, toUpdate);
         LawClientDTO updatedDTO = modelMapper.map(updated, LawClientDTO.class);
         LOGGER.info("LawClient: {} was updated by name to the database!", lawClientName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
+
+    @DeleteMapping("/deleteById/{lawClientId}")
+    ResponseEntity <LawClientDTO> deleteLawClientById(@PathVariable(NUMBER_VARIABLE_PATH) String lawClientId){
+        LawClientDTO deleted = modelMapper.map(lawClientService.deleteLawClientById(lawClientId), LawClientDTO.class);
+        LOGGER.info("LawClient deleted: {} by id from the database!", deleted.getName());
+        return new ResponseEntity<>(deleted, HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/deleteByName") // ?lawyerName=
+    ResponseEntity <LawClientDTO> deleteLawClientByName(@RequestParam String lawClientName){
+        LawClient deleted = lawClientService.deleteLawClientByName(lawClientName);
+        LawClientDTO updatedDTO = modelMapper.map(deleted, LawClientDTO.class);
+        LOGGER.info("LawClient: {} was deleted by name from the database!", lawClientName);
+        return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
+    }
+
+
+    @DeleteMapping("/deleteAll")
+    ResponseEntity <String> deleteAllLawClients(){
+        lawClientService.deleteAllLawClients();
+        LOGGER.info("Database is empty");
+        return new ResponseEntity<>("Database is empty", HttpStatus.OK);
+    }
+
 
 }
