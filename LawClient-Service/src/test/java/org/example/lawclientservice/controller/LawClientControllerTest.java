@@ -189,7 +189,17 @@ public class LawClientControllerTest {
 
     @Test
     void testGetLawClientById_NotFound() {
+// Try to get a non-existing lawyer id
+        String nonExistingId = "999999";
 
+        given()
+                .when()
+                .get("/api/lawclient/getById/" + nonExistingId)
+                .then()
+                .statusCode(404)
+                .body("status", equalTo(404))
+                .body("error", equalTo("Not Found"))
+                .body("message", equalTo("LawClient with id: " + nonExistingId + " was not found!"));
     }
 
 }
