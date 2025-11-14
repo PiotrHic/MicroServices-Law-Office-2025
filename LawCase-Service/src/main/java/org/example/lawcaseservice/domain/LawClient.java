@@ -8,7 +8,7 @@ import lombok.*;
 @EqualsAndHashCode
 public class LawClient {
 
-//    private String id;
-//    private String name;
+    private String id;
+    private String name;
 
 }
