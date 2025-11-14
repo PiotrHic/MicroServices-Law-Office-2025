@@ -131,5 +131,5 @@ public class LawyerController {
         Lawyer founded = lawyerService.getLawyerByID(lawyerId);
         founded.setLawCaseList(lawCaseClient.findLawCaseWithLawClientsByLawyerId(lawyerId));
         return founded;
-    };
+    }
 }

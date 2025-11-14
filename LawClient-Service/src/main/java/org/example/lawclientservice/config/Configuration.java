@@ -17,13 +17,10 @@ public class Configuration {
         return new ModelMapper();
     }
 
-    @Autowired
-    private LoadBalancedExchangeFilterFunction filterFunction;
     @Bean
     public WebClient lawCaseWebClient() {
         return WebClient.builder()
                 .baseUrl("http://Lawcase-Service")
-                .filter(filterFunction)
                 .build();
     }
 
