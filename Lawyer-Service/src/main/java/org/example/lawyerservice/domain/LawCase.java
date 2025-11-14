@@ -16,6 +16,6 @@ public class LawCase {
 
     private String id;
     private String name;
-    private Integer lawClientId;
+    private String lawClientId;
     private Object lawClient;
 }
