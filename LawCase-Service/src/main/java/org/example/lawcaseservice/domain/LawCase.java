@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -23,6 +24,7 @@ public class LawCase {
 
     @Id
     private String id;
+    @Indexed(unique = true)
     @NotBlank(message = "Name is required!")
     @Size(min=4, message = "Name of the case must have at least 4 characters!")
     private String name;
