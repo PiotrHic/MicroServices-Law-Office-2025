@@ -1,8 +1,8 @@
 package org.example.lawyerservice.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.lawyerservice.client.LawCaseClient;
@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -26,7 +25,7 @@ public class LawyerController {
     private final LawyerService lawyerService;
     private final LawCaseClient lawCaseClient;
 
-    ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     private static final Logger LOGGER
             = LoggerFactory.getLogger(LawyerController.class);
@@ -35,6 +34,14 @@ public class LawyerController {
     private final String NAME_VARIABLE_PATH = "lawyerName";
 
 
+    @Operation(
+            summary = "Add new Lawyer",
+            description = "Creates a new lawyer and stores it in the database."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Lawyer created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PostMapping
     ResponseEntity<LawyerDTO> createLawyer(@Valid @RequestBody LawyerDTO lawyerDTO){
         Lawyer added = lawyerService.addLawyer(modelMapper.map(lawyerDTO,Lawyer.class));
@@ -132,4 +139,5 @@ public class LawyerController {
         founded.setLawCaseList(lawCaseClient.findLawCaseWithLawClientsByLawyerId(lawyerId));
         return founded;
     }
+
 }

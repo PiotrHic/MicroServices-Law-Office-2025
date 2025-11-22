@@ -26,3 +26,5 @@ Technologies:
 - Mongo DB
 - Open API
 - Maven
+- HTTPExchange
+- WebClient
