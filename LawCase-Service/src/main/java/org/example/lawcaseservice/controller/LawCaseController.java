@@ -3,6 +3,8 @@ package org.example.lawcaseservice.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.lawcaseservice.client.LawClientClient;
@@ -24,6 +26,7 @@ import java.util.Set;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/lawcase")
+@Tag(name = "LawCase Controller")
 public class LawCaseController {
 
     private final LawCaseService lawCaseService;
@@ -39,6 +42,13 @@ public class LawCaseController {
     private final String NUMBER_VARIABLE_PATH = "lawCaseId";
     private final String NAME_VARIABLE_PATH = "lawCaseName";
 
+    @Operation(
+            description = "Creates a new LawCase and stores it in the database"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "LawCase created successfully"),
+            @ApiResponse(responseCode = "500", description = "Invalid input data")
+    })
     @PostMapping
     ResponseEntity<LawCaseDTO> createLawCase(@Valid @RequestBody LawCaseDTO lawCaseDTO){
         LawCase added = lawCaseService.createLawCase(modelMapper.map(lawCaseDTO, LawCase.class));
@@ -47,6 +57,13 @@ public class LawCaseController {
                 HttpStatus.valueOf(201));
     }
 
+    @Operation(
+            description = "Get LawCase from the database by the id  - api/lawcase/getById/1"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCase delivered successfully"),
+            @ApiResponse(responseCode = "404", description = "LawCase was not found")
+    })
     @GetMapping("/getById/{lawCaseId}")
     ResponseEntity<LawCaseDTO> getLawCaseById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId) {
         LawCaseDTO foundedById = modelMapper.map(lawCaseService.getLawCaseById(lawCaseId),LawCaseDTO.class);
@@ -54,6 +71,13 @@ public class LawCaseController {
         return new ResponseEntity<>(foundedById, HttpStatus.valueOf(200));
     }
 
+    @Operation(
+            description = "Get LawCase from the database by the name  - api/lawcase/getByName?lawcaseName=Piotr+Hic"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCase delivered successfully"),
+            @ApiResponse(responseCode = "404", description = "LawCase was not found")
+    })
     @GetMapping("/getByName") // ?lawyerName=
     ResponseEntity<LawCaseDTO> getLawCaseByName(@RequestParam(NAME_VARIABLE_PATH) String lawCaseName) {
         LawCaseDTO foundedByName = modelMapper.map(lawCaseService.getLawCaseByName(lawCaseName),LawCaseDTO.class);
@@ -61,11 +85,18 @@ public class LawCaseController {
         return new ResponseEntity<>(foundedByName, HttpStatus.valueOf(200));
     }
 
+    @Operation(
+            description = "Get all LawCase from the Database"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCase delivered"),
+            @ApiResponse(responseCode = "500", description = "Empty Database")
+    })
     @GetMapping("/getAllLawCases")
     ResponseEntity<List<LawCaseDTO>> getAllLawCases() {
         List<LawCase> lawCases = lawCaseService.getAllLawCases();
         if (lawCases.isEmpty()) {
-            throw new LayerInstantiationException("There is no lawCases in the database!");
+            throw new LayerInstantiationException("There is no LawCases in the database!");
         }
         LOGGER.info("All LawCases were founded!");
         List<LawCaseDTO> lawCaseDTOs = lawCases.stream()
@@ -74,6 +105,14 @@ public class LawCaseController {
         return new ResponseEntity<>(lawCaseDTOs, HttpStatus.valueOf(200));
     }
 
+    @Operation(
+            description = "Update LawCase from the database by the id  - /api/lawcase/updateById/1"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCase delivered successfully"),
+            @ApiResponse(responseCode = "404", description = "LawCase was not found by id"),
+            @ApiResponse(responseCode = "500", description = "Parameter was not correct"),
+    })
     @PutMapping("/updateById/{lawCaseId}")
     ResponseEntity<LawCaseDTO> updateLawCaseById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId,
                                                @Valid @RequestBody LawCase lawCase) {
@@ -83,6 +122,15 @@ public class LawCaseController {
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
+    @Operation(
+            description = "Update LawCase from the database by the name  " +
+                    "- /api/lawcase/updateByName?lawcaseName=Piotr+Hic"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCase delivered successfully"),
+            @ApiResponse(responseCode = "404", description = "LawCase was not found by name"),
+            @ApiResponse(responseCode = "500", description = "Parameter was not correct"),
+    })
     @PutMapping("/updateByName") // ?lawyerName=
     ResponseEntity<LawCaseDTO> updateLawCaseByName(@RequestParam String lawCaseName,@Valid @RequestBody LawCaseDTO lawCaseDTO){
         LawCase toUpdate = modelMapper.map(lawCaseDTO, LawCase.class);
@@ -92,6 +140,13 @@ public class LawCaseController {
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
+    @Operation(
+            description = "Delete LawCase from the database by the id  - /api/lawcase/deleteById/1"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCase deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "LawCase was not found by id")
+    })
     @DeleteMapping("/deleteById/{lawCaseId}")
     ResponseEntity <LawCaseDTO> deleteLawCaseById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId){
         LawCaseDTO deleted = modelMapper.map(lawCaseService.deleteLawCaseById(lawCaseId), LawCaseDTO.class);
@@ -99,6 +154,13 @@ public class LawCaseController {
         return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
 
+    @Operation(
+            description = "Delete LawCase from the database by the name  - deleteByName?lawcaseName=Piotr+Hic"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCase deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "LawCase was not found by name")
+    })
     @DeleteMapping("/deleteByName") // ?lawyerName=
     ResponseEntity <LawCaseDTO> deleteLawCaseByName(@RequestParam String lawCaseName){
         LawCase deleted= lawCaseService.deleteLawCaseByName(lawCaseName);
@@ -107,6 +169,12 @@ public class LawCaseController {
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
+    @Operation(
+            description = "Delete all LawCases from the Database"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "All LawCases deleted")
+    })
     @DeleteMapping("/deleteAll")
     ResponseEntity <String> deleteAlLawCases(){
         lawCaseService.deleteAllLawCases();
@@ -115,12 +183,16 @@ public class LawCaseController {
     }
 
     // WebClient methods
-
-
-
-
+    
     // Lawyer-Service
 
+    @Operation(
+            description = "Send LawCases to the Lawyer microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCases delivered by Id and attached to the Lawyer"),
+            @ApiResponse(responseCode = "500", description = "Some internal server error")
+    })
     @GetMapping("forLawyer/{lawyerId}")
     public List<LawCase> findLawCaseByLawyerId(@PathVariable("lawyerId") String lawyerId) {
         List<LawCase> lawCases
@@ -132,6 +204,13 @@ public class LawCaseController {
         return lawCasesToSend;
     }
 
+    @Operation(
+            description = "Send LawCases with LawClients to the Lawyer microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCases delivered by Id and attached to the LawCase"),
+            @ApiResponse(responseCode = "500", description = "Some internal server error")
+    })
     @GetMapping("forLawyer-withLawClient/{lawyerId}")
     public List<LawCase> findLawCaseWithLawClientsByLawyerId(@PathVariable("lawyerId") String lawyerId){
         List<LawCase> lawCasesToSend = findLawCaseByLawyerId(lawyerId);
@@ -144,7 +223,13 @@ public class LawCaseController {
     }
 
     // LawClient-Service
-
+    @Operation(
+            description = "Send LawCases to LawClients"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCase delivered by Id and attached to the LawCase"),
+            @ApiResponse(responseCode = "500", description = "Some internal server error")
+    })
     @GetMapping("/forLawClient/{lawClientId}")
     public List<LawCase> findLawCaseByLawClientId(@PathVariable("lawClientId") String lawClientId){
         List<LawCase> lawCases
@@ -156,7 +241,13 @@ public class LawCaseController {
     }
 
     // To get from another services
-
+    @Operation(
+            description = "Send LawCases to LawClients"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCase delivered by Id and attached to the LawCase"),
+            @ApiResponse(responseCode = "500", description = "Some internal server error")
+    })
     @GetMapping("/toBringLawyer/{lawyerId}")
     public LawCase findLawyerByLawyerId(@PathVariable("lawyerId") String lawyerId) {
         LawCase founded = lawCaseService
@@ -168,17 +259,24 @@ public class LawCaseController {
         return founded;
     }
 
-    @GetMapping("/toBringLawClient/{lawClientId}")
-    public LawCase findLawClientForLawCase(@PathVariable("lawClientId") String lawClientId){
+    @Operation(
+            description = "Send LawCases to LawClients"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCase delivered by Id and attached to the LawCase"),
+            @ApiResponse(responseCode = "500", description = "Some internal server error")
+    })
+    @GetMapping("/toBringLawClient/{lawCaseId}")
+    public LawCase findLawClientForLawCase(@PathVariable("lawCaseId") String lawCaseId){
         List<LawCase> lawCases
                 = lawCaseService.getAllLawCases();
 
         LawCase founded = lawCases.stream()
-                .filter(lawCase -> lawCase.getLawClientId().equals(lawClientId))
+                .filter(lawCase -> lawCase.getId().equals(lawCaseId))
                 .findFirst()
                 .orElseThrow();
 
-        founded.setLawClient(lawClientClient.findLawClientByLawClientId(lawClientId));
+        founded.setLawClient(lawClientClient.findLawClientByLawClientId(founded.getLawClientId()));
         return founded;
     }
 }

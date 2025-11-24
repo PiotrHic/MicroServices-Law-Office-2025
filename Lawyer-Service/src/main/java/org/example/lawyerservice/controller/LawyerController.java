@@ -56,7 +56,7 @@ public class LawyerController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lawyer delivered successfully"),
-            @ApiResponse(responseCode = "404", description = "Lawyer was not found")
+            @ApiResponse(responseCode = "404", description = "Lawyer was not found by id")
     })
     @GetMapping("/getById/{lawyerId}")
     ResponseEntity<LawyerDTO> getLawyerById(@PathVariable(NUMBER_VARIABLE_PATH) String lawyerId) {

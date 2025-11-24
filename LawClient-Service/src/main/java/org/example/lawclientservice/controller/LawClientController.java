@@ -120,7 +120,7 @@ public class LawClientController {
 
     @Operation(
             description = "Update LawClient from the database by the name  " +
-                    "- /api/lawclient/updateByName?lawyerName=Piotr+Hic"
+                    "- /api/lawclient/updateByName?lawclientName=Piotr+Hic"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "LawClient delivered successfully"),
