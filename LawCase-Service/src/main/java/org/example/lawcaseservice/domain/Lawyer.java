@@ -3,6 +3,8 @@ package org.example.lawcaseservice.domain;
 import lombok.*;
 
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @EqualsAndHashCode
 public class Lawyer {

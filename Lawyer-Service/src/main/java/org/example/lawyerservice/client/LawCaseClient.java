@@ -11,9 +11,9 @@ import java.util.List;
 public interface LawCaseClient {
 
     @GetExchange("/api/lawcase/forLawyer/{lawyerId}")
-    public List<LawCase> findLawCaseByLawyerId(@PathVariable("lawyerId") String lawyerId);
+    public List<LawCase> bringLawCaseByLawyerId(@PathVariable("lawyerId") String lawyerId);
 
     @GetExchange("/api/lawcase/forLawyer-withLawClient/{lawyerId}")
-    public List<LawCase> findLawCaseWithLawClientsByLawyerId(@PathVariable("lawyerId") String lawyerId);
+    public List<LawCase> bringLawCaseWithLawClientsByLawyerId(@PathVariable("lawyerId") String lawyerId);
 
 }
