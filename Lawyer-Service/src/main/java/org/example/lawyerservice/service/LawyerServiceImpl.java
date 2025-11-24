@@ -45,6 +45,7 @@ public class LawyerServiceImpl implements LawyerService{
     @Override
     public Lawyer updateLawyerById(String id, Lawyer lawyer) {
         Lawyer toUpdate = getLawyerByID(id);
+        toUpdate.setId(id);
         toUpdate.setName(lawyer.getName());
         toUpdate.setLawCaseList(lawyer.getLawCaseList());
         lawyerRepository.deleteLawyerById(id);
@@ -55,6 +56,7 @@ public class LawyerServiceImpl implements LawyerService{
     @Override
     public Lawyer updateLawyerByName(String name, Lawyer lawyer) { // to implement
         Lawyer toUpdate = getLawyerByName(name);
+        toUpdate.setId(lawyer.getId());
         toUpdate.setName(lawyer.getName());
         toUpdate.setLawCaseList(lawyer.getLawCaseList());
         lawyerRepository.deleteLawyerByName(name);

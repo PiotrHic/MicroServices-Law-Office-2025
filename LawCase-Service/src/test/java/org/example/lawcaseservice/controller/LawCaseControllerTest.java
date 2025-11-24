@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.UUID;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -62,7 +65,7 @@ class LawCaseControllerTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post("/api/lawcase")
+                .post("/api/lawcase/create")
                 .then()
                 .statusCode(201)
                 .body("name", equalTo("Civil Law Case"));
@@ -74,7 +77,7 @@ class LawCaseControllerTest {
 
         given()
                 .when()
-                .get("/api/lawcase/getById/" + lawCase.getId())
+                .get("/api/lawcase/get/byId/" + lawCase.getId())
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Civil Law Case"));
@@ -87,7 +90,7 @@ class LawCaseControllerTest {
         given()
                 .queryParam("lawCaseName", "Piotr Hic")
                 .when()
-                .get("/api/lawcase/getByName")
+                .get("/api/lawcase/get/byName")
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Piotr Hic"));
@@ -100,7 +103,7 @@ class LawCaseControllerTest {
 
         given()
                 .when()
-                .get("/api/lawcase/getAllLawCases")
+                .get("/api/lawcase/get/allLawCases")
                 .then()
                 .statusCode(200)
                 .body("size()", equalTo(2));
@@ -110,7 +113,9 @@ class LawCaseControllerTest {
     @Test
     void testUpdateLawCaseById() {
 
-        LawCase lawCase = lawCaseRepository.save(new LawCase(null, "Civil Law Case"));
+        String id = String.valueOf(UUID.randomUUID());
+
+        LawCase lawCase = lawCaseRepository.save(new LawCase(id, "Civil Law Case"));
 
         String updateRequest = """
             {
@@ -122,7 +127,7 @@ class LawCaseControllerTest {
                 .contentType("application/json")
                 .body(updateRequest)
                 .when()
-                .put("/api/lawcase/updateById/" + lawCase.getId())
+                .put("/api/lawcase/update/byId/" + id)
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Criminal Law Case"));
@@ -145,7 +150,7 @@ class LawCaseControllerTest {
                 .queryParam("lawCaseName", "Civil Law Case")
                 .body(updateRequest)
                 .when()
-                .put("/api/lawcase/updateByName")
+                .put("/api/lawcase/update/byName")
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Criminal Law Case"));
@@ -154,12 +159,14 @@ class LawCaseControllerTest {
     @Test
     void testDeleteLawCaseById() {
         // Arrange — insert a lawyer in test MongoDB
-        LawCase lawCase = lawCaseRepository.save(new LawCase(null, "Civil Law Case"));
+        String id = String.valueOf(UUID.randomUUID());
+
+        LawCase lawCase = lawCaseRepository.save(new LawCase(id, "Civil Law Case"));
 
         // Act + Assert — call DELETE endpoint
         given()
                 .when()
-                .delete("/api/lawcase/deleteById/" + lawCase.getId())
+                .delete("/api/lawcase/delete/byId/" + id)
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Civil Law Case"));
@@ -173,7 +180,7 @@ class LawCaseControllerTest {
         given()
                 .queryParam("lawCaseName", "Civil Law Case")
                 .when()
-                .delete("/api/lawcase/deleteByName")
+                .delete("/api/lawcase/delete/byName")
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Civil Law Case"));
@@ -186,7 +193,7 @@ class LawCaseControllerTest {
 
         given()
                 .when()
-                .delete("/api/lawcase/deleteAll")
+                .delete("/api/lawcase/delete/allLawCases")
                 .then()
                 .statusCode(200)
                 .body(equalTo("Database is empty"));
@@ -201,7 +208,7 @@ class LawCaseControllerTest {
 
         given()
                 .when()
-                .get("/api/lawcase/getById/" + nonExistingId)
+                .get("/api/lawcase/get/byId/" + nonExistingId)
                 .then()
                 .statusCode(404)
                 .body("status", equalTo(404))
@@ -209,5 +216,19 @@ class LawCaseControllerTest {
                 .body("message", equalTo("LawCase with id: " + nonExistingId + " was not found!"));
     }
 
+    @Test
+    void testGetLawyerByName_NotFound() {
+        // Try to get a non-existing lawyer id
+        String nonExistingName = "xxxxx";
 
+        given()
+                .queryParam("lawCaseName", nonExistingName)
+                .when()
+                .get("/api/lawcase/get/byName")
+                .then()
+                .statusCode(404)
+                .body("status", equalTo(404))
+                .body("error", equalTo("Not Found"))
+                .body("message", equalTo("LawCase with name: " + nonExistingName + " was not found!"));
+    }
 }

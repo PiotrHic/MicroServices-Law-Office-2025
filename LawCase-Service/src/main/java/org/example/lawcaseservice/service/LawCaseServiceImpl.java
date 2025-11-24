@@ -44,22 +44,28 @@ public class LawCaseServiceImpl implements LawCaseService {
     @Override
     public LawCase updateLawCaseById(String id, LawCase lawCase) {
         LawCase toUpdate = getLawCaseById(id);
+        toUpdate.setId(id);
         toUpdate.setName(lawCase.getName());
         toUpdate.setLawClient(lawCase.getLawClient());
         toUpdate.setLawClientId(lawCase.getLawClientId());
         toUpdate.setLawyer(lawCase.getLawyer());
         toUpdate.setLawyerId(lawCase.getLawyerId());
+        lawCaseRepository.deleteLawCaseById(id);
+        lawCaseRepository.save(toUpdate);
         return toUpdate;
     }
 
     @Override
     public LawCase updateLawCaseByName(String name, LawCase lawCase) {
         LawCase toUpdate = getLawCaseByName(name);
+        toUpdate.setId(lawCase.getId());
         toUpdate.setName(lawCase.getName());
         toUpdate.setLawClient(lawCase.getLawClient());
         toUpdate.setLawClientId(lawCase.getLawClientId());
         toUpdate.setLawyer(lawCase.getLawyer());
         toUpdate.setLawyerId(lawCase.getLawyerId());
+        lawCaseRepository.deleteLawCaseByName(name);
+        lawCaseRepository.save(toUpdate);
         return toUpdate;
     }
 

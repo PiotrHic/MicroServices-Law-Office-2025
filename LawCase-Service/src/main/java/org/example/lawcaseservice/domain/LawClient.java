@@ -4,8 +4,6 @@ import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Builder
 @EqualsAndHashCode
 public class LawClient {
