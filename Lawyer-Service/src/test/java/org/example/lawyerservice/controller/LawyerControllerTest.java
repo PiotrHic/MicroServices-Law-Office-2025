@@ -53,7 +53,7 @@ public class LawyerControllerTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post("/api/lawyer")
+                .post("/api/lawyer/create")
                 .then()
                 .statusCode(201)
                 .body("name", equalTo("Piotr Hic"));
@@ -65,7 +65,7 @@ public class LawyerControllerTest {
 
         given()
                 .when()
-                .get("/api/lawyer/getById/" + lawyer.getId())
+                .get("/api/lawyer/get/byId/" + lawyer.getId())
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("PH"));
@@ -78,7 +78,7 @@ public class LawyerControllerTest {
         given()
                 .queryParam("lawyerName", "Piotr Hic")
                 .when()
-                .get("/api/lawyer/getByName")
+                .get("/api/lawyer/get/byName")
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Piotr Hic"));
@@ -91,7 +91,7 @@ public class LawyerControllerTest {
 
         given()
                 .when()
-                .get("/api/lawyer/getAllLawyers")
+                .get("/api/lawyer/get/allLawyers")
                 .then()
                 .statusCode(200)
                 .body("size()", equalTo(2));
@@ -113,7 +113,7 @@ public class LawyerControllerTest {
                 .contentType("application/json")
                 .body(updateRequest)
                 .when()
-                .put("/api/lawyer/updateById/" + lawyer.getId())
+                .put("/api/lawyer/update/byId/" + lawyer.getId())
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("New Name"));
@@ -136,7 +136,7 @@ public class LawyerControllerTest {
                 .queryParam("lawyerName", "Piotr Hic")
                 .body(updateRequest)
                 .when()
-                .put("/api/lawyer/updateByName")
+                .put("/api/lawyer/update/byName")
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("New Name"));
@@ -150,7 +150,7 @@ public class LawyerControllerTest {
         // Act + Assert — call DELETE endpoint
         given()
                 .when()
-                .delete("/api/lawyer/deleteById/" + lawyer.getId())
+                .delete("/api/lawyer/delete/byId/" + lawyer.getId())
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Piotr Hic"));
@@ -164,7 +164,7 @@ public class LawyerControllerTest {
         given()
                 .queryParam("lawyerName", "Piotr Hic")
                 .when()
-                .delete("/api/lawyer/deleteByName")
+                .delete("/api/lawyer/delete/byName")
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Piotr Hic"));
@@ -177,7 +177,7 @@ public class LawyerControllerTest {
 
         given()
                 .when()
-                .delete("/api/lawyer/deleteAll")
+                .delete("/api/lawyer/delete/allLawyers")
                 .then()
                 .statusCode(200)
                 .body(equalTo("Database is empty"));
@@ -193,11 +193,27 @@ public class LawyerControllerTest {
 
         given()
                 .when()
-                .get("/api/lawyer/getById/" + nonExistingId)
+                .get("/api/lawyer/get/byId/" + nonExistingId)
                 .then()
                 .statusCode(404)
                 .body("status", equalTo(404))
                 .body("error", equalTo("Not Found"))
                 .body("message", equalTo("Lawyer with id: " + nonExistingId + " was not found!"));
+    }
+
+    @Test
+    void testGetLawyerByName_NotFound() {
+        // Try to get a non-existing lawyer id
+        String nonExistingName = "xxxxx";
+
+        given()
+                .queryParam("lawyerName", nonExistingName)
+                .when()
+                .get("/api/lawyer/get/byName")
+                .then()
+                .statusCode(404)
+                .body("status", equalTo(404))
+                .body("error", equalTo("Not Found"))
+                .body("message", equalTo("Lawyer with name: " + nonExistingName + " was not found!"));
     }
 }
