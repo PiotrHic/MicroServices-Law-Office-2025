@@ -40,6 +40,7 @@ public class LawClientServiceImpl implements LawClientService {
     @Override
     public LawClient updateLawClientById(String lawClientId, LawClient lawClient) {
         LawClient toUpdate = getLawClientByID(lawClientId);
+        toUpdate.setId(lawClientId);
         toUpdate.setName(lawClient.getName());
         toUpdate.setLawCaseList(lawClient.getLawCaseList());
         return toUpdate;
@@ -48,6 +49,7 @@ public class LawClientServiceImpl implements LawClientService {
     @Override
     public LawClient updateLawClientByName(String name, LawClient lawClient) {
         LawClient toUpdate = getLawClientByName(name);
+        toUpdate.setId(lawClient.getId());
         toUpdate.setName(lawClient.getName());
         toUpdate.setLawCaseList(lawClient.getLawCaseList());
         return toUpdate;

@@ -54,7 +54,7 @@ public class LawClientControllerTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post("/api/lawclient")
+                .post("/api/lawclient/create")
                 .then()
                 .statusCode(201)
                 .body("name", equalTo("Piotr Hic"));
@@ -66,7 +66,7 @@ public class LawClientControllerTest {
 
         given()
                 .when()
-                .get("/api/lawclient/getById/" + lawClient.getId())
+                .get("/api/lawclient/get/byId/" + lawClient.getId())
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Piotr Hic"));
@@ -79,7 +79,7 @@ public class LawClientControllerTest {
         given()
                 .queryParam("lawClientName", "Piotr Hic")
                 .when()
-                .get("/api/lawclient/getByName")
+                .get("/api/lawclient/get/byName")
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Piotr Hic"));
@@ -92,7 +92,7 @@ public class LawClientControllerTest {
 
         given()
                 .when()
-                .get("/api/lawclient/getAllLawClients")
+                .get("/api/lawclient/get/allLawClients")
                 .then()
                 .statusCode(200)
                 .body("size()", equalTo(2));
@@ -114,7 +114,7 @@ public class LawClientControllerTest {
                 .contentType("application/json")
                 .body(updateRequest)
                 .when()
-                .put("/api/lawclient/updateById/" + lawClient.getId())
+                .put("/api/lawclient/update/byId/" + lawClient.getId())
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("New Name"));
@@ -137,7 +137,7 @@ public class LawClientControllerTest {
                 .queryParam("lawClientName", "Piotr Hic")
                 .body(updateRequest)
                 .when()
-                .put("/api/lawclient/updateByName")
+                .put("/api/lawclient/update/byName")
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("New Name"));
