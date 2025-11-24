@@ -47,6 +47,8 @@ public class LawyerServiceImpl implements LawyerService{
         Lawyer toUpdate = getLawyerByID(id);
         toUpdate.setName(lawyer.getName());
         toUpdate.setLawCaseList(lawyer.getLawCaseList());
+        lawyerRepository.deleteLawyerById(id);
+        lawyerRepository.save(toUpdate);
         return toUpdate;
     }
 
@@ -55,6 +57,8 @@ public class LawyerServiceImpl implements LawyerService{
         Lawyer toUpdate = getLawyerByName(name);
         toUpdate.setName(lawyer.getName());
         toUpdate.setLawCaseList(lawyer.getLawCaseList());
+        lawyerRepository.deleteLawyerByName(name);
+        lawyerRepository.save(toUpdate);
         return toUpdate;
     }
 
