@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/lawyer")
+@RequestMapping("/api/lawyer/webclient")
 public class WebClientController {
 
     private final LawyerService lawyerService;
@@ -23,7 +23,7 @@ public class WebClientController {
             = LoggerFactory.getLogger(WebClientController.class);
 
     @Operation(
-            description = "Send Lawyer to the LawCase microservice"
+            description = "Send Lawyer to the LawCase microservice - /api/lawyer/webclient/toSendLawyer/1"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lawyer delivered by Id and attached to the LawCase"),
@@ -37,7 +37,7 @@ public class WebClientController {
     }
 
     @Operation(
-            description = "Get List of LawCases by Lawyer Id"
+            description = "Get List of LawCases by Lawyer Id - /api/lawyer/webclient/getLawCases/1"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "LawCases delivered by Id and attached to the Lawyer"),
@@ -52,7 +52,8 @@ public class WebClientController {
     }
 
     @Operation(
-            description = "Get List of LawCases by Lawyer Id"
+            description = "Get List of LawCases by Lawyer Id " +
+                    "- /api/lawyer/webclient/getLawCases-withLawClient/1"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "LawCases delivered by Id and attached to the Lawyer"),
