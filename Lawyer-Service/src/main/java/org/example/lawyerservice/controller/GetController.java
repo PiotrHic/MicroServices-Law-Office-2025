@@ -7,8 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.example.lawyerservice.domain.DTO.LawyerDTO;
 import org.example.lawyerservice.domain.Lawyer;
+import org.example.lawyerservice.mapper.LawyerMapper;
 import org.example.lawyerservice.service.LawyerService;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,8 +23,7 @@ import java.util.List;
 public class GetController {
 
     private final LawyerService lawyerService;
-    private final ModelMapper modelMapper;
-
+    private final LawyerMapper lawyerMapper;
     private static final Logger LOGGER
             = LoggerFactory.getLogger(WebClientController.class);
 
@@ -41,7 +40,7 @@ public class GetController {
     })
     @GetMapping("/byId" + NUMBER_QUERY_PATH)
     ResponseEntity<LawyerDTO> getLawyerById(@PathVariable(NUMBER_VARIABLE_PATH) String lawyerId) {
-        LawyerDTO foundedById = modelMapper.map(lawyerService.getLawyerByID(lawyerId),LawyerDTO.class);
+        LawyerDTO foundedById = lawyerMapper.toDTO(lawyerService.getLawyerByID(lawyerId));
         LOGGER.info("Lawyer: {} was founded by id in the database!", foundedById.getName());
         return new ResponseEntity<>(foundedById, HttpStatus.valueOf(200));
     }
@@ -56,7 +55,7 @@ public class GetController {
     })
     @GetMapping("/byName") // ?lawyerName=
     ResponseEntity<LawyerDTO> getLawyerByName(@RequestParam(NAME_VARIABLE_PATH) String lawyerName) {
-        LawyerDTO foundedByName = modelMapper.map(lawyerService.getLawyerByName(lawyerName),LawyerDTO.class);
+        LawyerDTO foundedByName = lawyerMapper.toDTO(lawyerService.getLawyerByName(lawyerName));
         LOGGER.info("Lawyer: {} was founded by name in the database!", foundedByName.getName());
         return new ResponseEntity<>(foundedByName, HttpStatus.valueOf(200));
     }
@@ -76,7 +75,7 @@ public class GetController {
         }
         LOGGER.info("All Lawyers were founded!");
         List<LawyerDTO> lawyersDTO = lawyers.stream()
-                .map(lawyer -> modelMapper.map(lawyer,LawyerDTO.class))
+                .map(lawyerMapper::toDTO)
                 .toList();
         return new ResponseEntity<>(lawyersDTO, HttpStatus.valueOf(200));
     }

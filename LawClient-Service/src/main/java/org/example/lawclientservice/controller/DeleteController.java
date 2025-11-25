@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.example.lawclientservice.domain.DTO.LawClientDTO;
 import org.example.lawclientservice.domain.LawClient;
+import org.example.lawclientservice.mapper.LawClientMapper;
 import org.example.lawclientservice.service.LawClientService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -20,9 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class DeleteController {
 
     private final LawClientService lawClientService;
-
-    ModelMapper modelMapper;
-
+    private final LawClientMapper lawClientMapper;
     private static final Logger LOGGER
             = LoggerFactory.getLogger(WebClientController.class);
 
@@ -40,7 +39,7 @@ public class DeleteController {
     })
     @DeleteMapping("/deleteById" + NUMBER_QUERY_PATH)
     ResponseEntity<LawClientDTO> deleteLawClientById(@PathVariable(NUMBER_VARIABLE_PATH) String lawClientId){
-        LawClientDTO deleted = modelMapper.map(lawClientService.deleteLawClientById(lawClientId), LawClientDTO.class);
+        LawClientDTO deleted = lawClientMapper.toDTO(lawClientService.getLawClientByID(lawClientId));
         LOGGER.info("LawClient deleted: {} by id from the database!", deleted.getName());
         return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
@@ -57,7 +56,7 @@ public class DeleteController {
     @DeleteMapping("/byName") // ?lawyerName=
     ResponseEntity <LawClientDTO> deleteLawClientByName(@RequestParam String lawClientName){
         LawClient deleted = lawClientService.deleteLawClientByName(lawClientName);
-        LawClientDTO updatedDTO = modelMapper.map(deleted, LawClientDTO.class);
+        LawClientDTO updatedDTO = lawClientMapper.toDTO(lawClientService.getLawClientByID(lawClientName));
         LOGGER.info("LawClient: {} was deleted by name from the database!", lawClientName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }

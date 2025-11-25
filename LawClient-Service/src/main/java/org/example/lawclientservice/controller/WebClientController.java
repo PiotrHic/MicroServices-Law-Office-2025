@@ -1,40 +1,31 @@
 package org.example.lawclientservice.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.example.lawclientservice.client.LawCaseClient;
-import org.example.lawclientservice.domain.DTO.LawClientDTO;
-import org.example.lawclientservice.domain.LawClient;
-import org.example.lawclientservice.service.LawClientService;
-import org.modelmapper.ModelMapper;
+import org.example.lawclientservice.mapper.LawClientMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/lawclient")
+@RequestMapping("/api/lawclient/webclient")
 @Tag(name = "LawClient Controller")
 public class WebClientController {
 
-    private final LawClientService lawClientService;
-
-    ModelMapper modelMapper;
-
+    private final LawCaseClient lawCaseClient;
+    private final LawClientMapper lawClientMapper;
     private static final Logger LOGGER
             = LoggerFactory.getLogger(WebClientController.class);
 
-    private final String NUMBER_VARIABLE_PATH = "lawClientId";
     private final String NUMBER_QUERY_PATH = "/{lawClientId}";
-    private final String NAME_VARIABLE_PATH = "lawClientName";
+    private final String LAWCLIENT_ID = "lawClientId";
 
-    private final LawCaseClient lawCaseClient;
 
+
+
+    /*
     @Operation(
             description = "Send LawClient to the LawCase microservice"
     )
@@ -43,7 +34,8 @@ public class WebClientController {
             @ApiResponse(responseCode = "500", description = "Some internal server error")
     })
     @GetMapping("/sendToLawCase" + NUMBER_QUERY_PATH)
-    public LawClient sendLawClientByLawClientIdToLawCase(@PathVariable("lawClientId") String lawClientId){
+    public LawClient sendLawClientByLawClientIdToLawCase(@PathVariable(LAWCLIENT_ID) String lawClientId){
+        LOGGER.info("WebClient request was send for the LawClient from LawCase with LawClient id: " + lawClientId);
         return lawClientService.getLawClientByID(lawClientId);
     }
 
@@ -56,9 +48,10 @@ public class WebClientController {
             @ApiResponse(responseCode = "500", description = "Some internal server error")
     })
     @GetMapping("/toBringLawCase" + NUMBER_QUERY_PATH)
-    public LawClient findLawCaseByLawClientId(@PathVariable("lawClientId") String lawClientId){
+    public LawClient findLawCaseByLawClientId(@PathVariable(LAWCLIENT_ID) String lawClientId){
         LawClient founded = lawClientService.getLawClientByID(lawClientId);
         founded.setLawCaseList(lawCaseClient.findLawCaseByLawClientId(lawClientId));
+        LOGGER.info("WebClient request was send for the LawClient with id: " + lawClientId);
         return founded;
     }
 
@@ -71,9 +64,27 @@ public class WebClientController {
             @ApiResponse(responseCode = "500", description = "Some internal server error")
     })
     @GetMapping("/toBringLawCase-withLawyer" + NUMBER_QUERY_PATH)
-    public LawClient findLawCaseWithLawyersByLawClientId(@PathVariable("lawClientId") String lawClientId){
+    public LawClient findLawCaseWithLawyersByLawClientId(@PathVariable(LAWCLIENT_ID) String lawClientId){
         LawClient founded = lawClientService.getLawClientByID(lawClientId);
         founded.setLawCaseList(lawCaseClient.findLawCaseWithLawyerByLawClientId(lawClientId));
+        LOGGER.info("WebClient request was send for the LawClient with Lawyer with id: " + lawClientId);
         return founded;
     }
+
+
+     */
+
+
+    @GetMapping("/testFromLawCaseService")
+    public String testLawCase(){
+        LOGGER.info("Taken from LawCase Service");
+        return lawCaseClient.testToLawCaseService();
+    }
+
+    @GetMapping("/testToLawCaseService")
+    public String testSend1(){
+        LOGGER.info("Send to LawCase Service");
+        return "From LawClient-Service to LawCase-Service";
+    }
+
 }
