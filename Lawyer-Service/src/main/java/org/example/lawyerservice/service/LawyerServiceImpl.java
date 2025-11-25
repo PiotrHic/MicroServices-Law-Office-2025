@@ -4,6 +4,7 @@ package org.example.lawyerservice.service;
 import lombok.AllArgsConstructor;
 import org.example.lawyerservice.domain.Lawyer;
 import org.example.lawyerservice.exception.LawyerNotFoundException;
+import org.example.lawyerservice.mapper.LawyerMapper;
 import org.example.lawyerservice.repository.LawyerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

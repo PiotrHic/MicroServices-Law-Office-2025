@@ -37,7 +37,7 @@ public class LawCaseClientIntegrationTest {
 
     @Test
     void testFindLawCaseByLawyerId() {
-        List<LawCase> result = client.bringLawCaseByLawyerId("L123");
+        List<LawCase> result = client.findLawCasesByLawyerIdAndSendThem("L123");
 
         // Assert fields
         assertNotNull(result);

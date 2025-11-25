@@ -8,8 +8,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.lawyerservice.domain.DTO.LawyerDTO;
 import org.example.lawyerservice.domain.Lawyer;
+import org.example.lawyerservice.mapper.LawyerMapper;
 import org.example.lawyerservice.service.LawyerService;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,10 +26,10 @@ public class CreateController {
 
     private final LawyerService lawyerService;
 
-    private final ModelMapper modelMapper;
-
     private static final Logger LOGGER
             = LoggerFactory.getLogger(WebClientController.class);
+
+    private final LawyerMapper lawyerMapper;
 
     @Operation(
             description = "Creates a new Lawyer and stores it in the database  - api/lawyer/create"
@@ -40,9 +40,9 @@ public class CreateController {
     })
     @PostMapping
     ResponseEntity<LawyerDTO> createLawyer(@Valid @RequestBody LawyerDTO lawyerDTO){
-        Lawyer added = lawyerService.addLawyer(modelMapper.map(lawyerDTO,Lawyer.class));
+        Lawyer added = lawyerService.addLawyer(lawyerMapper.toEntity(lawyerDTO));
+        LawyerDTO dto = lawyerMapper.toDTO(added);
         LOGGER.info("Lawyer: {} was added tp the database!", added.getName());
-        return new ResponseEntity<>(modelMapper.map(added,LawyerDTO.class),
-                HttpStatus.valueOf(201));
+        return new ResponseEntity<>(dto,HttpStatus.valueOf(201));
     }
 }

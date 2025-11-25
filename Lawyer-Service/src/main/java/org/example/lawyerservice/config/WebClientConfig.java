@@ -1,35 +1,19 @@
 package org.example.lawyerservice.config;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.servers.Server;
 import org.example.lawyerservice.client.LawCaseClient;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancedExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.support.WebClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
-@org.springframework.context.annotation.Configuration
-public class Configuration {
-
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
-
-    @Autowired
-    private LoadBalancedExchangeFilterFunction filterFunction;
+@Configuration
+public class WebClientConfig {
 
     @Bean
     public WebClient lawCaseWebClient() {
         return WebClient.builder()
-                .baseUrl("http://Lawcase-Service")
-                .filter(filterFunction)
+                .baseUrl("http://localhost:8012")
                 .build();
     }
 
@@ -41,5 +25,4 @@ public class Configuration {
                         .build();
         return httpServiceProxyFactory.createClient(LawCaseClient.class);
     }
-
 }
