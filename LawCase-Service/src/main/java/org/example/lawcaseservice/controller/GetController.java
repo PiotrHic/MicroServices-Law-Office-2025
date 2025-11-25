@@ -3,14 +3,11 @@ package org.example.lawcaseservice.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.example.lawcaseservice.client.LawClientClient;
-import org.example.lawcaseservice.client.LawyerClient;
 import org.example.lawcaseservice.domain.DTO.LawCaseDTO;
 import org.example.lawcaseservice.domain.LawCase;
+import org.example.lawcaseservice.mapper.LawCaseMapper;
 import org.example.lawcaseservice.service.LawCaseService;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,7 +22,7 @@ import java.util.List;
 public class GetController {
 
     private final LawCaseService lawCaseService;
-    ModelMapper modelMapper;
+    private final LawCaseMapper lawCaseMapper;
 
     private static final Logger LOGGER
             = LoggerFactory.getLogger(WebClientController.class);
@@ -45,7 +42,7 @@ public class GetController {
     })
     @GetMapping("/byId" + NUMBER_QUERY_PATH)
     ResponseEntity<LawCaseDTO> getLawCaseById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId) {
-        LawCaseDTO foundedById = modelMapper.map(lawCaseService.getLawCaseById(lawCaseId),LawCaseDTO.class);
+        LawCaseDTO foundedById = lawCaseMapper.toDTO(lawCaseService.getLawCaseById(lawCaseId));
         LOGGER.info("LawCase: {} was founded by id in the database!", foundedById.getName());
         return new ResponseEntity<>(foundedById, HttpStatus.valueOf(200));
     }
@@ -60,7 +57,7 @@ public class GetController {
     })
     @GetMapping("/byName") // ?lawyerName=
     ResponseEntity<LawCaseDTO> getLawCaseByName(@RequestParam(NAME_VARIABLE_PATH) String lawCaseName) {
-        LawCaseDTO foundedByName = modelMapper.map(lawCaseService.getLawCaseByName(lawCaseName),LawCaseDTO.class);
+        LawCaseDTO foundedByName = lawCaseMapper.toDTO(lawCaseService.getLawCaseByName(lawCaseName));
         LOGGER.info("LawCase: {} was founded by name in the database!", foundedByName.getName());
         return new ResponseEntity<>(foundedByName, HttpStatus.valueOf(200));
     }
@@ -80,7 +77,7 @@ public class GetController {
         }
         LOGGER.info("All LawCases were founded!");
         List<LawCaseDTO> lawCaseDTOs = lawCases.stream()
-                .map(lawCase -> modelMapper.map(lawCase,LawCaseDTO.class))
+                .map(lawCaseMapper::toDTO)
                 .toList();
         return new ResponseEntity<>(lawCaseDTOs, HttpStatus.valueOf(200));
     }

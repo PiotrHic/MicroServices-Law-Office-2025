@@ -5,12 +5,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.example.lawcaseservice.client.LawClientClient;
-import org.example.lawcaseservice.client.LawyerClient;
 import org.example.lawcaseservice.domain.DTO.LawCaseDTO;
 import org.example.lawcaseservice.domain.LawCase;
+import org.example.lawcaseservice.mapper.LawCaseMapper;
 import org.example.lawcaseservice.service.LawCaseService;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class UpdateController {
 
     private final LawCaseService lawCaseService;
-    ModelMapper modelMapper;
+    private final LawCaseMapper lawCaseMapper;
     private static final Logger LOGGER
             = LoggerFactory.getLogger(WebClientController.class);
 
@@ -41,7 +39,7 @@ public class UpdateController {
     ResponseEntity<LawCaseDTO> updateLawCaseById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId,
                                                  @Valid @RequestBody LawCase lawCase) {
         LawCase updated = lawCaseService.updateLawCaseById(lawCaseId, lawCase);
-        LawCaseDTO updatedDTO = modelMapper.map(updated, LawCaseDTO.class);
+        LawCaseDTO updatedDTO = lawCaseMapper.toDTO(updated);
         LOGGER.info("LawCase: {} was updated by id to the database!", lawCaseId);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
@@ -57,9 +55,9 @@ public class UpdateController {
     })
     @PutMapping("/byName") // ?lawyerName=
     ResponseEntity<LawCaseDTO> updateLawCaseByName(@RequestParam String lawCaseName, @Valid @RequestBody LawCaseDTO lawCaseDTO){
-        LawCase toUpdate = modelMapper.map(lawCaseDTO, LawCase.class);
+        LawCase toUpdate = lawCaseMapper.toEntity(lawCaseDTO);
         LawCase updated = lawCaseService.updateLawCaseByName(lawCaseName, toUpdate);
-        LawCaseDTO updatedDTO = modelMapper.map(updated, LawCaseDTO.class);
+        LawCaseDTO updatedDTO = lawCaseMapper.toDTO(updated);
         LOGGER.info("LawCase: {} was updated by name to the database!", lawCaseName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }

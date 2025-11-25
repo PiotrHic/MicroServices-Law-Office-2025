@@ -8,8 +8,8 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.lawcaseservice.domain.DTO.LawCaseDTO;
 import org.example.lawcaseservice.domain.LawCase;
+import org.example.lawcaseservice.mapper.LawCaseMapper;
 import org.example.lawcaseservice.service.LawCaseService;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,8 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CreateController {
 
     private final LawCaseService lawCaseService;
-
-    ModelMapper modelMapper;
+    private final LawCaseMapper lawCaseMapper;
     private static final Logger LOGGER
             = LoggerFactory.getLogger(WebClientController.class);
 
@@ -39,9 +38,9 @@ public class CreateController {
     })
     @PostMapping
     ResponseEntity<LawCaseDTO> createLawCase(@Valid @RequestBody LawCaseDTO lawCaseDTO){
-        LawCase added = lawCaseService.createLawCase(modelMapper.map(lawCaseDTO, LawCase.class));
+        LawCase added = lawCaseService.createLawCase(lawCaseMapper.toEntity(lawCaseDTO));
         LOGGER.info("LawCase: {} was added tp the database!", added.getName());
-        return new ResponseEntity<>(modelMapper.map(added,LawCaseDTO.class),
+        return new ResponseEntity<>(lawCaseMapper.toDTO(added),
                 HttpStatus.valueOf(201));
     }
 }

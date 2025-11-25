@@ -6,8 +6,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.example.lawcaseservice.domain.DTO.LawCaseDTO;
 import org.example.lawcaseservice.domain.LawCase;
+import org.example.lawcaseservice.mapper.LawCaseMapper;
 import org.example.lawcaseservice.service.LawCaseService;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,8 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class DeleteController {
 
     private final LawCaseService lawCaseService;
-    ModelMapper modelMapper;
-
+    private final LawCaseMapper lawCaseMapper;
     private static final Logger LOGGER
             = LoggerFactory.getLogger(WebClientController.class);
 
@@ -39,7 +38,7 @@ public class DeleteController {
     })
     @DeleteMapping("/byId" + NUMBER_QUERY_PATH)
     ResponseEntity<LawCaseDTO> deleteLawCaseById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId){
-        LawCaseDTO deleted = modelMapper.map(lawCaseService.deleteLawCaseById(lawCaseId), LawCaseDTO.class);
+        LawCaseDTO deleted = lawCaseMapper.toDTO(lawCaseService.deleteLawCaseById(lawCaseId));
         LOGGER.info("LawCase deleted: {} by id from the database!", deleted.getName());
         return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
@@ -53,10 +52,10 @@ public class DeleteController {
             @ApiResponse(responseCode = "404", description = "LawCase was not found by name"),
             @ApiResponse(responseCode = "500", description = "Parameter is not correct or Internal Server Error")
     })
-    @DeleteMapping("/byName") // ?lawyerName=
+    @DeleteMapping("/byName")
     ResponseEntity <LawCaseDTO> deleteLawCaseByName(@RequestParam String lawCaseName){
         LawCase deleted= lawCaseService.deleteLawCaseByName(lawCaseName);
-        LawCaseDTO updatedDTO = modelMapper.map(deleted, LawCaseDTO.class);
+        LawCaseDTO updatedDTO = lawCaseMapper.toDTO(deleted);
         LOGGER.info("LawCase: {} was deleted by name from the database!", lawCaseName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
