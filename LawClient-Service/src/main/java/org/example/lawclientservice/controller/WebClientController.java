@@ -1,29 +1,19 @@
 package org.example.lawclientservice.controller;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
 import org.example.lawclientservice.client.LawCaseClient;
 import org.example.lawclientservice.mapper.LawClientMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.example.lawclientservice.service.LawClientService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api/lawclient/webclient")
-@Tag(name = "LawClient Controller")
-public class WebClientController {
+public class WebClientController extends ParentController{
 
-    private final LawCaseClient lawCaseClient;
-    private final LawClientMapper lawClientMapper;
-    private static final Logger LOGGER
-            = LoggerFactory.getLogger(WebClientController.class);
+    private LawCaseClient lawCaseClient;
 
-    private final String NUMBER_QUERY_PATH = "/{lawClientId}";
-    private final String LAWCLIENT_ID = "lawClientId";
-
-
-
+    public WebClientController(LawClientService lawClientService, LawClientMapper lawClientMapper) {
+        super(lawClientService, lawClientMapper);
+    }
 
     /*
     @Operation(
@@ -70,10 +60,7 @@ public class WebClientController {
         LOGGER.info("WebClient request was send for the LawClient with Lawyer with id: " + lawClientId);
         return founded;
     }
-
-
-     */
-
+    */
 
     @GetMapping("/testFromLawCaseService")
     public String testLawCase(){
