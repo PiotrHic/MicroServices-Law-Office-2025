@@ -5,13 +5,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.example.lawyerservice.domain.DTO.LawyerDTO;
 import org.example.lawyerservice.domain.Lawyer;
 import org.example.lawyerservice.mapper.LawyerMapper;
 import org.example.lawyerservice.service.LawyerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,16 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api/lawyer/create")
-public class CreateController {
+public class CreateController extends ParentController{
 
-    private final LawyerService lawyerService;
 
-    private static final Logger LOGGER
-            = LoggerFactory.getLogger(WebClientController.class);
-
-    private final LawyerMapper lawyerMapper;
+    public CreateController(LawyerService lawyerService, LawyerMapper lawyerMapper) {
+        super(lawyerService, lawyerMapper);
+    }
 
     @Operation(
             description = "Creates a new Lawyer and stores it in the database  - api/lawyer/create"

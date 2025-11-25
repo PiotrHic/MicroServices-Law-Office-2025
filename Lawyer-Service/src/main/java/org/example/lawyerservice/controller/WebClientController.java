@@ -3,29 +3,24 @@ package org.example.lawyerservice.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.AllArgsConstructor;
 import org.example.lawyerservice.client.LawCaseClient;
 import org.example.lawyerservice.domain.DTO.LawyerDTO;
 import org.example.lawyerservice.domain.Lawyer;
 import org.example.lawyerservice.mapper.LawyerMapper;
 import org.example.lawyerservice.service.LawyerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api/lawyer/webclient")
-public class WebClientController {
+public class WebClientController extends ParentController{
 
-    private final LawyerService lawyerService;
-    private final LawCaseClient lawCaseClient;
-    private final LawyerMapper lawyerMapper;
+    private LawCaseClient lawCaseClient;
 
-    private static final Logger LOGGER
-            = LoggerFactory.getLogger(WebClientController.class);
+    public WebClientController(LawyerService lawyerService, LawyerMapper lawyerMapper) {
+        super(lawyerService, lawyerMapper);
+    }
 
     @Operation(
             description = "Send Lawyer to the LawCase microservice - /api/lawyer/webclient/toSendLawyer/1"
