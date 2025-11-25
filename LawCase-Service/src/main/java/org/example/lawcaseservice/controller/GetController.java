@@ -3,13 +3,10 @@ package org.example.lawcaseservice.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.AllArgsConstructor;
 import org.example.lawcaseservice.domain.DTO.LawCaseDTO;
 import org.example.lawcaseservice.domain.LawCase;
 import org.example.lawcaseservice.mapper.LawCaseMapper;
 import org.example.lawcaseservice.service.LawCaseService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,20 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api/lawcase/get")
-public class GetController {
+public class GetController extends ParentController{
 
-    private final LawCaseService lawCaseService;
-    private final LawCaseMapper lawCaseMapper;
-
-    private static final Logger LOGGER
-            = LoggerFactory.getLogger(WebClientController.class);
-
-    private final String NUMBER_VARIABLE_PATH = "lawCaseId";
-    private final String NUMBER_QUERY_PATH = "/{lawCaseId}";
-    private final String NAME_VARIABLE_PATH = "lawCaseName";
-
+    public GetController(LawCaseService lawCaseService, LawCaseMapper lawCaseMapper) {
+        super(lawCaseService, lawCaseMapper);
+    }
 
     @Operation(
             description = "Get LawCase from the database by the id  - api/lawcase/get/byId/1"

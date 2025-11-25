@@ -3,35 +3,28 @@ package org.example.lawcaseservice.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.AllArgsConstructor;
 import org.example.lawcaseservice.client.LawClientClient;
 import org.example.lawcaseservice.client.LawyerClient;
 import org.example.lawcaseservice.domain.LawCase;
 import org.example.lawcaseservice.domain.Lawyer;
 import org.example.lawcaseservice.mapper.LawCaseMapper;
 import org.example.lawcaseservice.service.LawCaseService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api/lawcase/webclient")
-public class WebClientController {
+public class WebClientController extends ParentController {
 
-    private final LawCaseService lawCaseService;
     private LawyerClient lawyerClient;
     private LawClientClient lawClientClient;
-    private final LawCaseMapper lawCaseMapper;
+    private LawCaseMapper lawCaseMapper;
 
-    private static final Logger LOGGER
-            = LoggerFactory.getLogger(WebClientController.class);
+    public WebClientController(LawCaseService lawCaseService, LawCaseMapper lawCaseMapper) {
+        super(lawCaseService, lawCaseMapper);
+    }
 
     // Between Lawyer-Service
 
