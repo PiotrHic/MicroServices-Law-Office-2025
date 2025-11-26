@@ -1,73 +1,67 @@
-package org.example.lawclientservice.controller;
+package org.example.lawclientservice.controller.webclient;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.example.lawclientservice.client.LawCaseClient;
+import org.example.lawclientservice.domain.DTO.LawClientDTO;
+import org.example.lawclientservice.webclient.LawCaseWebClient;
+import org.example.lawclientservice.controller.ParentController;
 import org.example.lawclientservice.domain.LawClient;
 import org.example.lawclientservice.mapper.LawClientMapper;
 import org.example.lawclientservice.service.LawClientService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/lawclient/webclient")
-public class WebClientController extends ParentController{
+public class LawClientWebClientController extends ParentController {
 
-    LawCaseClient lawCaseClient;
+    LawCaseWebClient lawCaseWebClient;
 
-    public WebClientController(LawClientService lawClientService, LawClientMapper lawClientMapper,
-                               LawCaseClient lawCaseClient) {
+    public LawClientWebClientController(LawClientService lawClientService, LawClientMapper lawClientMapper,
+                                        LawCaseWebClient lawCaseWebClient) {
         super(lawClientService, lawClientMapper);
-        this.lawCaseClient = lawCaseClient;
-    }
-
-
-    @Operation(
-            description = "Send LawClient to the LawCase microservice"
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "LawClient delivered by Id and attached to the LawCase"),
-            @ApiResponse(responseCode = "500", description = "Some internal server error")
-    })
-    @GetMapping("/sendLawClient" + NUMBER_QUERY_PATH) // dziala
-    public LawClient sendLawClientByLawClientIdToLawCase(@PathVariable(NUMBER_VARIABLE_PATH) String lawClientId){
-        LOGGER.info("WebClient request was send for the LawClient from LawCase with LawClient id: " + lawClientId);
-        return lawClientService.getLawClientByID(lawClientId);
+        this.lawCaseWebClient = lawCaseWebClient;
     }
 
     @Operation(
-            description = "To get LawCases by LawClient id"
+            description = "Send Request to the LawCase microservice to get LawCases with LawClient id"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "LawCases delivered by Id and attached to the LawClient"),
-            @ApiResponse(responseCode = "404", description = "LawClient was not found"),
-            @ApiResponse(responseCode = "500", description = "Some internal server error")
+            @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
     @GetMapping("/getLawCases" + NUMBER_QUERY_PATH) // dziala
-    public LawClient findLawCaseByLawClientId(@PathVariable(NUMBER_VARIABLE_PATH) String lawClientId){
+    public ResponseEntity<LawClientDTO> findLawCaseByLawClientId(
+            @PathVariable(NUMBER_VARIABLE_PATH) String lawClientId){
         LawClient founded = lawClientService.getLawClientByID(lawClientId);
-        founded.setLawCaseList(lawCaseClient.findLawCaseByLawClientId(lawClientId));
-        lawClientService.updateLawClientById(lawClientId, founded);
-        LOGGER.info("WebClient request was send for the LawClient with id: " + lawClientId);
-        return founded;
+        founded.setLawCaseList(lawCaseWebClient.findLawCaseByLawClientId(lawClientId));
+        LawClient updated = lawClientService.updateLawClientById(lawClientId, founded);
+        LawClientDTO dto = lawClientMapper.toDTO(updated);
+        LOGGER.info("WebClient request was sent for the LawCases with Lawyer for the LawClient with id: {}"
+                , lawClientId);
+        return new ResponseEntity<>(dto, HttpStatus.valueOf(200));
     }
 
     @Operation(
-            description = "To get LawCases with Lawyer by LawClient id"
+            description = "Send Request to the LawCase microservice to get LawCases with LawClient id with Lawyer"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "LawCases delivered by Id with Lawyer and attached to the LawClient"),
-            @ApiResponse(responseCode = "404", description = "LawClient was not found"),
-            @ApiResponse(responseCode = "500", description = "Some internal server error")
+            @ApiResponse(responseCode = "200", description = "LawCases delivered by Id with Lawyer and attached " +
+                    "to the LawClient"),
+            @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
     @GetMapping("/getLawCases-withLawyer" + NUMBER_QUERY_PATH)
-    public LawClient findLawCaseWithLawyersByLawClientId(@PathVariable(NUMBER_VARIABLE_PATH) String lawClientId){
+    public ResponseEntity<LawClientDTO> findLawCaseWithLawyersByLawClientId(
+            @PathVariable(NUMBER_VARIABLE_PATH) String lawClientId){
         LawClient founded = lawClientService.getLawClientByID(lawClientId);
-        founded.setLawCaseList(lawCaseClient.findLawCaseWithLawyerByLawClientId(lawClientId));
-        lawClientService.updateLawClientById(lawClientId, founded);
-        LOGGER.info("WebClient request was send for the LawClient with Lawyer with id: " + lawClientId);
-        return founded;
+        founded.setLawCaseList(lawCaseWebClient.findLawCaseWithLawyerByLawClientId(lawClientId));
+        LawClient updated = lawClientService.updateLawClientById(lawClientId, founded);
+        LOGGER.info("WebClient request was sent for the LawCases for the LawClient with id: {}", lawClientId);
+        return new ResponseEntity<>(lawClientMapper.toDTO(updated), HttpStatus.valueOf(200));
     }
-
 
 }
