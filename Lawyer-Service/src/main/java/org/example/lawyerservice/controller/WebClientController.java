@@ -14,12 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/lawyer/webclient")
-public class WebClientController extends ParentController{
+public class WebClientController extends ParentController {
 
     private LawCaseClient lawCaseClient;
 
-    public WebClientController(LawyerService lawyerService, LawyerMapper lawyerMapper) {
+    public WebClientController(LawyerService lawyerService, LawyerMapper lawyerMapper, LawCaseClient lawCaseClient) {
         super(lawyerService, lawyerMapper);
+        this.lawCaseClient = lawCaseClient;
     }
 
     @Operation(
@@ -30,7 +31,7 @@ public class WebClientController extends ParentController{
             @ApiResponse(responseCode = "404", description = "Lawyer was not find by id"),
             @ApiResponse(responseCode = "500", description = "Some internal server error")
     })
-    @GetMapping("/toSendLawyer/{lawyerId}") // dziala
+    @GetMapping("/sendLawyerToLawCase/{lawyerId}") // dziala
     public Lawyer sendLawyerByLawyerId(@PathVariable("lawyerId") String lawyerId){
         LOGGER.info("Lawyer: {} was sent by id to the LawCase Service!", lawyerId);
         return lawyerService.getLawyerByID(lawyerId);
@@ -47,17 +48,15 @@ public class WebClientController extends ParentController{
             @ApiResponse(responseCode = "500", description = "Some internal server error")
     })
     @GetMapping("/getLawCases/{lawyerId}") // dziala
-    ResponseEntity<LawyerDTO> bringLawCaseByLawyerId(@PathVariable("lawyerId") String lawyerId){
+    ResponseEntity<Lawyer> bringLawCaseByLawyerId(@PathVariable("lawyerId") String lawyerId){
         Lawyer founded = lawyerService.getLawyerByID(lawyerId);
         founded.setLawCaseList(lawCaseClient.findLawCasesByLawyerIdAndSendThem(lawyerId));
         lawyerService.updateLawyerById(lawyerId, founded);
-        return new ResponseEntity<>(lawyerMapper.toDTO(founded), HttpStatus.valueOf(200));
+        return new ResponseEntity<>(founded, HttpStatus.valueOf(200));
     }
 
-    /*
-
     @Operation(
-            description = "Get List of LawCases by Lawyer Id " +
+            description = "Get List of LawCases with LawCClients by Lawyer Id " +
                     "- /api/lawyer/webclient/getLawCases-withLawClient/1"
     )
     @ApiResponses({
@@ -65,25 +64,12 @@ public class WebClientController extends ParentController{
             @ApiResponse(responseCode = "404", description = "Lawyer was not found"),
             @ApiResponse(responseCode = "500", description = "Some internal server error")
     })
-    @GetMapping("/getLawCases-withLawClient/{lawyerId}")
+    @GetMapping("/getLawCases-withLawClient/{lawyerId}") // dziala
     public Lawyer bringLawCaseWithLawClientsByLawyerId(@PathVariable("lawyerId") String lawyerId){
         Lawyer founded = lawyerService.getLawyerByID(lawyerId);
         founded.setLawCaseList(lawCaseClient.bringLawCaseWithLawClientsByLawyerId(lawyerId));
+        lawyerService.updateLawyerById(lawyerId, founded);
         return founded;
-    }
-
-     */
-
-    @GetMapping("/testfromLawCaseService")
-    public String testLawCase(){
-        LOGGER.info("Taken from LawCase Service");
-        return lawCaseClient.testToTakeFromLawCaseService();
-    }
-
-    @GetMapping("/testToLawCaseService")
-    public String testSend1(){
-        LOGGER.info("Send to LawCase Service");
-        return "From Lawyer-Service to LawCase Service";
     }
 
 }
