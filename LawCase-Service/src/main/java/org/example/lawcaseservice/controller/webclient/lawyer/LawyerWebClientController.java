@@ -20,13 +20,13 @@ public class WebClientController extends ParentController {
 
     private LawyerClient lawyerClient;
     private LawClientClient lawClientClient;
-    private LawCaseMapper lawCaseMapper;
 
-    public WebClientController(LawCaseService lawCaseService, LawCaseMapper lawCaseMapper) {
+    public WebClientController(LawCaseService lawCaseService, LawCaseMapper lawCaseMapper,
+                               LawyerClient lawyerClient, LawClientClient lawClientClient) {
         super(lawCaseService, lawCaseMapper);
+        this.lawyerClient = lawyerClient;
+        this.lawClientClient = lawClientClient;
     }
-
-    // Between Lawyer-Service
 
     @Operation(
             description = "Send request to the Lawyer Service to Bring " +
@@ -38,14 +38,14 @@ public class WebClientController extends ParentController {
             @ApiResponse(responseCode = "500", description = "Some internal server error")
     })
 
-    @GetMapping("/toBringLawyer/{lawyerId}") // dziala
+    @GetMapping("/getLawyer/{lawyerId}") // dziala
     public ResponseEntity<List<LawCase>> bringLawyerByLawyerId(@PathVariable("lawyerId") String lawyerId) {
         List<LawCase> listOfFounded = lawCaseService
                 .getAllLawCases()
                 .stream()
                 .filter(lawCase -> lawCase.getLawyerId()
                         .equals(lawyerId)).toList();
-        Lawyer foundedLawyer = lawyerClient.requestLawyerByLawyerId(lawyerId);
+        Lawyer foundedLawyer = lawyerClient.getLawyerByLawyerId(lawyerId);
         for (LawCase lawCase : listOfFounded) {
             lawCase.setLawyer(foundedLawyer);
             lawCaseService.updateLawCaseById( lawCase.getId(), lawCase);
@@ -74,34 +74,6 @@ public class WebClientController extends ParentController {
         return lawCasesToSend;
     }
 
-    /*
-    @GetMapping("/toBringLawyer/{lawyerId}")
-    public ResponseEntity<List<LawCaseDTO>> bringLawyerByLawyerId(@PathVariable("lawyerId") String lawyerId) {
-
-        List<LawCase> listOfFounded = lawCaseService
-                .getAllLawCases()
-                .stream()
-                .filter(lawCase -> lawCase.getLawyerId()
-                        .equals(lawyerId)).toList();
-        Lawyer foundedLawyer = lawyerClient.sendLawyerByLawyerId(lawyerId);
-        for (LawCase lawCase : listOfFounded) {
-            lawCase.setLawyer(foundedLawyer);
-            lawCaseService.updateLawCaseById( lawCase.getId(), lawCase);
-        }
-        List<LawCaseDTO> dtos = listOfFounded.stream()
-                .map(lawCase -> modelMapper.map(lawCase, LawCaseDTO.class))
-                .toList();
-        System.out.println("4");
-        return new ResponseEntity<>(dtos,HttpStatus.valueOf(200));
-    }
-    */
-
-
-
-    /*
-
-
-
 
     @Operation(
             description = "Send LawCases with LawClients to the Lawyer microservice"
@@ -110,7 +82,7 @@ public class WebClientController extends ParentController {
             @ApiResponse(responseCode = "200", description = "LawCases delivered by Id and attached to the LawCase"),
             @ApiResponse(responseCode = "500", description = "Some internal server error")
     })
-    @GetMapping("forLawyer-withLawClient/{lawyerId}")
+    @GetMapping("/forLawyer-WithLawClient/{lawyerId}")
     public List<LawCase> findLawCaseWithLawClientsByLawyerIdAndSendThem(@PathVariable("lawyerId") String lawyerId){
         List<LawCase> lawCasesToSend = findLawCasesByLawyerIdAndSendThem(lawyerId);
         lawCasesToSend
@@ -121,76 +93,63 @@ public class WebClientController extends ParentController {
         return lawCasesToSend;
     }
 
-    // LawClient-Service
+    @Operation(
+            description = "Request LawClient to LawCases from LawClient Service"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "LawCllient delivered by lawCaseId and attached to the LawCase"),
+            @ApiResponse(responseCode = "404", description = "LawCase was not found by id"),
+            @ApiResponse(responseCode = "500", description = "Some internal server error")
+    })
+    @GetMapping("/getLawClient/{lawClientId}") // dziala
+    public List<LawCase> bringLawClientForLawCase(@PathVariable("lawClientId") String lawClientId){
+
+        List<LawCase> founded = lawCaseService.getAllLawCases()
+                .stream()
+                .filter(lawcase -> lawcase.getLawClientId().equals(lawClientId))
+                .toList();
+        for(LawCase lawCase : founded){
+            lawCase.setLawClient(lawClientClient.findLawClientByLawClientId(lawClientId));
+            lawCaseService.updateLawCaseById(lawCase.getId(),lawCase);
+        }
+        return founded;
+    }
+
     @Operation(
             description = "Send LawCases to LawClients"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "LawCase delivered by Id and attached to the LawCase"),
+            @ApiResponse(responseCode = "200", description = "LawCases delivered by Id and attached to the LawClient"),
             @ApiResponse(responseCode = "404", description = "LawClient was not found by id"),
             @ApiResponse(responseCode = "500", description = "Some internal server error")
     })
-    @GetMapping("/forLawClient/{lawClientId}")
+    @GetMapping("/toLawClient/{lawClientId}") // dziala
     public List<LawCase> sendLawCasesByLawClientId(@PathVariable("lawClientId") String lawClientId){
-        List<LawCase> lawCases
-                = lawCaseService.getAllLawCases();
-        return lawCases
+        return lawCaseService.getAllLawCases()
                 .stream()
                 .filter(lawCase -> lawCase.getLawClientId().equals(lawClientId))
                 .toList();
     }
 
-    // To get from another services
-
-    */
-
-
-    /*
     @Operation(
-            description = "Send LawCases to LawClients"
+            description = "Send LawCases with Lawyer to LawClients"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "LawCLIENT delivered by lawCaseId and attached to the LawCase"),
-            @ApiResponse(responseCode = "404", description = "LawCase was not found by id"),
+            @ApiResponse(responseCode = "200", description = "LawCases with Lawyer delivered by Id " +
+                    "and attached to the LawClient"),
+            @ApiResponse(responseCode = "404", description = "LawClient was not found by id"),
             @ApiResponse(responseCode = "500", description = "Some internal server error")
     })
-    @GetMapping("/toBringLawClient/{lawCaseId}")
-    public LawCase bringLawClientForLawCase(@PathVariable("lawCaseId") String lawCaseId){
-        List<LawCase> lawCases
-                = lawCaseService.getAllLawCases();
-
-        LawCase founded = lawCases.stream()
-                .filter(lawCase -> lawCase.getId().equals(lawCaseId))
-                .findFirst()
-                .orElseThrow();
-
-        founded.setLawClient(lawClientClient.findLawClientByLawClientId(founded.getLawClientId()));
-        return founded;
-    }
-
-     */
-
-    @GetMapping("/testLawyer")
-    public String test1() {
-        LOGGER.info("Taken from Lawyer Service");
-        return lawyerClient.testToLawyerService();
-    }
-
-    @GetMapping("/testToLawyerService")
-    public String test2() {
-        LOGGER.info("Send to LawyerService");
-        return "To Lawyer from Law Case";
-    }
-
-    @GetMapping("/testLawClient")
-    public String test3() {
-        LOGGER.info("Taken from Lawyer Service");
-        return lawClientClient.testToLawClient();
-    }
-
-    @GetMapping("/testToLawClientService")
-    public String test4() {
-        LOGGER.info("Send to LawClientService");
-        return "From LawCase to Law Client";
+    @GetMapping("/forLawClient-withLawyer/{lawClientId}")
+    public List<LawCase> sendLawCasesWithLawyerToLawClient(@PathVariable("lawClientId") String lawClientId){
+        List<LawCase> foundedByLawClientId = lawCaseService.getAllLawCases()
+                .stream()
+                .filter(lawCase -> lawCase.getLawClientId().equals(lawClientId))
+                .toList();
+        for(LawCase lawCase : foundedByLawClientId) {
+            lawCase.setLawyer(lawyerClient.getLawyerByLawyerId(lawCase.getLawyerId()));
+            lawCaseService.updateLawCaseById(lawCase.getId(), lawCase);
+        }
+        return foundedByLawClientId;
     }
 }

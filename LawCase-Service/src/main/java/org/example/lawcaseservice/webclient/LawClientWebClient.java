@@ -8,7 +8,7 @@ import org.springframework.web.service.annotation.HttpExchange;
 @HttpExchange
 public interface LawClientClient {
 
-    @GetExchange("/api/lawclient/forLawCase/{lawClientId}")
+    @GetExchange("/api/lawclient/webclient/sendToLawCase/{lawClientId}")
     public LawClient findLawClientByLawClientId(@PathVariable("lawClientId") String lawClientId);
 
 }

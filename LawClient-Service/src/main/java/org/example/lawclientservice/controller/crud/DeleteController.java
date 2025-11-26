@@ -46,7 +46,7 @@ public class DeleteController extends ParentController{
     @DeleteMapping("/byName") // ?lawyerName=
     ResponseEntity <LawClientDTO> deleteLawClientByName(@RequestParam String lawClientName){
         LawClient deleted = lawClientService.deleteLawClientByName(lawClientName);
-        LawClientDTO updatedDTO = lawClientMapper.toDTO(lawClientService.getLawClientByID(lawClientName));
+        LawClientDTO updatedDTO = lawClientMapper.toDTO(deleted);
         LOGGER.info("LawClient: {} was deleted by name from the database!", lawClientName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }

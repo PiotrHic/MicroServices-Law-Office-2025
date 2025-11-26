@@ -10,10 +10,10 @@ import java.util.List;
 @HttpExchange
 public interface LawCaseClient {
 
-    @GetExchange("/api/lawcase/forLawClient/{lawClientId}")
+    @GetExchange("/api/lawcase/webclient/toLawClient/{lawClientId}")
     public List<LawCase> findLawCaseByLawClientId(@PathVariable("lawClientId") String lawClientId);
 
-    @GetExchange("/api/lawcase/forLawClient-withLawyer/{lawClientId}")
+    @GetExchange("/api/lawcase/webclient/forLawClient-withLawyer/{lawClientId}")
     public List<LawCase> findLawCaseWithLawyerByLawClientId(@PathVariable("lawClientId") String lawClientId);
 
 }

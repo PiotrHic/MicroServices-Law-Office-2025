@@ -1,4 +1,4 @@
-package org.example.lawyerservice.client;
+package org.example.lawyerservice.webclient;
 
 
 import org.example.lawyerservice.domain.LawCase;
@@ -15,12 +15,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class LawCaseClientIntegrationTest {
+public class LawCaseWebClientIntegrationTest {
 
     @LocalServerPort
     int port;
 
-    LawCaseClient client;
+    LawCaseWebClient client;
 
     @BeforeEach
     void setup() {
@@ -32,7 +32,7 @@ public class LawCaseClientIntegrationTest {
                 HttpServiceProxyFactory.builderFor(RestClientAdapter.create(restClient))
                         .build();
 
-        client = factory.createClient(LawCaseClient.class);
+        client = factory.createClient(LawCaseWebClient.class);
     }
 
     @Test
