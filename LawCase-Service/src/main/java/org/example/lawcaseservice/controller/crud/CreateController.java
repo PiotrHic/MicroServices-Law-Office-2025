@@ -1,13 +1,15 @@
-package org.example.lawcaseservice.controller;
+package org.example.lawcaseservice.controller.crud;
 
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.example.lawcaseservice.controller.ParentController;
 import org.example.lawcaseservice.domain.DTO.LawCaseDTO;
 import org.example.lawcaseservice.domain.LawCase;
 import org.example.lawcaseservice.mapper.LawCaseMapper;
+import org.example.lawcaseservice.mapper.LawyerMapper;
 import org.example.lawcaseservice.service.LawCaseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/lawcase/create")
-public class CreateController extends ParentController{
+public class CreateController extends ParentController {
 
-
-    public CreateController(LawCaseService lawCaseService, LawCaseMapper lawCaseMapper) {
-        super(lawCaseService, lawCaseMapper);
+    public CreateController(LawCaseService lawCaseService, LawCaseMapper lawCaseMapper, LawyerMapper lawyerMapper) {
+        super(lawCaseService, lawCaseMapper, lawyerMapper);
     }
 
     @Operation(
@@ -30,7 +31,7 @@ public class CreateController extends ParentController{
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "LawCase created successfully"),
-            @ApiResponse(responseCode = "500", description = "Invalid input data")
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
     @PostMapping
     ResponseEntity<LawCaseDTO> createLawCase(@Valid @RequestBody LawCaseDTO lawCaseDTO){

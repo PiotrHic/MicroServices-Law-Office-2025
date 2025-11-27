@@ -1,11 +1,13 @@
-package org.example.lawcaseservice.controller;
+package org.example.lawcaseservice.controller.crud;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.example.lawcaseservice.controller.ParentController;
 import org.example.lawcaseservice.domain.DTO.LawCaseDTO;
 import org.example.lawcaseservice.domain.LawCase;
 import org.example.lawcaseservice.mapper.LawCaseMapper;
+import org.example.lawcaseservice.mapper.LawyerMapper;
 import org.example.lawcaseservice.service.LawCaseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/lawcase/get")
-public class GetController extends ParentController{
+public class GetController extends ParentController {
 
-    public GetController(LawCaseService lawCaseService, LawCaseMapper lawCaseMapper) {
-        super(lawCaseService, lawCaseMapper);
+    public GetController(LawCaseService lawCaseService, LawCaseMapper lawCaseMapper, LawyerMapper lawyerMapper) {
+        super(lawCaseService, lawCaseMapper, lawyerMapper);
     }
 
     @Operation(
@@ -26,11 +28,11 @@ public class GetController extends ParentController{
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "LawCase delivered successfully"),
-            @ApiResponse(responseCode = "404", description = "LawCase was not found"),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+            @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
-    @GetMapping("/byId" + NUMBER_QUERY_PATH)
-    ResponseEntity<LawCaseDTO> getLawCaseById(@PathVariable(NUMBER_VARIABLE_PATH) String lawCaseId) {
+    @GetMapping("/byId" + LAWCASE_NUMBER_QUERY_PATH)
+    ResponseEntity<LawCaseDTO> getLawCaseById(@PathVariable(LAWCASE_NUMBER_VARIABLE_PATH) String lawCaseId) {
         LawCaseDTO foundedById = lawCaseMapper.toDTO(lawCaseService.getLawCaseById(lawCaseId));
         LOGGER.info("LawCase: {} was founded by id in the database!", foundedById.getName());
         return new ResponseEntity<>(foundedById, HttpStatus.valueOf(200));
@@ -41,8 +43,8 @@ public class GetController extends ParentController{
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "LawCase delivered successfully"),
-            @ApiResponse(responseCode = "404", description = "LawCase was not found"),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+            @ApiResponse(responseCode = "404", description = DESCRIPTION_404_NAME),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
     @GetMapping("/byName") // ?lawyerName=
     ResponseEntity<LawCaseDTO> getLawCaseByName(@RequestParam(NAME_VARIABLE_PATH) String lawCaseName) {
