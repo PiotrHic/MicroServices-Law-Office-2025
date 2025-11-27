@@ -1,6 +1,6 @@
-package org.example.lawyerservice.config;
+package org.example.lawclientservice.config;
 
-import org.example.lawyerservice.webclient.LawCaseWebClient;
+import org.example.lawclientservice.webclient.LawCaseWebClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;

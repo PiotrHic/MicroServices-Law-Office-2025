@@ -1,6 +1,6 @@
 package org.example.lawcaseservice.config;
 
-import org.example.lawcaseservice.client.LawClientClient;
+import org.example.lawcaseservice.webclient.LawClientWebClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancedExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
@@ -24,11 +24,11 @@ public class WebClientLawClientConfig {
     }
 
     @Bean
-    public LawClientClient lawClientClient() {
+    public LawClientWebClient lawClientClient() {
         HttpServiceProxyFactory httpServiceProxyFactory =
                 HttpServiceProxyFactory
                         .builderFor(WebClientAdapter.create(lawClientWebClient()))
                         .build();
-        return httpServiceProxyFactory.createClient(LawClientClient.class);
+        return httpServiceProxyFactory.createClient(LawClientWebClient.class);
     }
 }
