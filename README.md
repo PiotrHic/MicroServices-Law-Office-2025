@@ -13,6 +13,7 @@ Functionalities:
 - Build automation
 - Validation 
 - API-Gateway
+- Micrometer Tracing
 
 Technologies:
 - Testcontainers
@@ -28,3 +29,4 @@ Technologies:
 - Maven
 - HTTPExchange
 - WebClient
+- Zipkin
