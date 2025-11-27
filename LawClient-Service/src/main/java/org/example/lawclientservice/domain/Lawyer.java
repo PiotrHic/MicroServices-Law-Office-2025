@@ -2,6 +2,7 @@ package org.example.lawclientservice.domain;
 
 import lombok.*;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

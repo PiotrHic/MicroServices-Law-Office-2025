@@ -1,14 +1,16 @@
-package org.example.lawyerservice.domain;
+package org.example.lawyerservice.domain.DTO;
 
 import lombok.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LawCase {
+@EqualsAndHashCode
+public class LawCaseDTO {
 
-    public LawCase(String id, String name) {
+    public LawCaseDTO(String id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -18,3 +20,4 @@ public class LawCase {
     private String lawClientId;
     private Object lawClient;
 }
+
