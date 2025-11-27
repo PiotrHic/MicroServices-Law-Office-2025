@@ -1,36 +1,37 @@
-package org.example.lawyerservice.controller;
+package org.example.lawyerservice.controller.crud;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.example.lawyerservice.controller.ParentController;
 import org.example.lawyerservice.domain.DTO.LawyerDTO;
+import org.example.lawyerservice.mapper.LawCaseMapper;
 import org.example.lawyerservice.mapper.LawyerMapper;
 import org.example.lawyerservice.service.LawyerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/api/lawyer/delete")
-public class DeleteController extends ParentController{
+public class DeleteController extends ParentController {
 
-    public DeleteController(LawyerService lawyerService, LawyerMapper lawyerMapper) {
-        super(lawyerService, lawyerMapper);
+    public DeleteController(LawyerService lawyerService, LawyerMapper lawyerMapper, LawCaseMapper lawCaseMapper) {
+        super(lawyerService, lawyerMapper, lawCaseMapper);
     }
 
     @Operation(
-            description = "Delete Lawyer from the database by the id  - /api/lawyer/delete/byId/1"
+            description = "Delete Lawyer from the database by the id - /api/lawyer/delete/byId/1"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lawyer deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Lawyer was not found by id"),
-            @ApiResponse(responseCode = "500", description = "Parameter was not correct or Internal Server Error")
+            @ApiResponse(responseCode = "200", description = "Lawyer deleted successfully by id"),
+            @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
     @DeleteMapping("/byId" + NUMBER_QUERY_PATH)
     ResponseEntity<LawyerDTO> deleteLawyerById(@PathVariable(NUMBER_VARIABLE_PATH) String lawyerId){
         LawyerDTO deleted = lawyerMapper.toDTO(lawyerService.deleteLawyerById(lawyerId));
-        LOGGER.info("Lawyer deleted: {} by id from the database!", deleted.getName());
+        LOGGER.info("Lawyer with id {} : deleted by id from the database!", deleted.getName());
         return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
 
@@ -39,14 +40,14 @@ public class DeleteController extends ParentController{
                     "?lawyerName=Piotr+Hic"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lawyer deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Lawyer was not found by name"),
-            @ApiResponse(responseCode = "500", description = "Parameter was not correct or Internal Server Error")
+            @ApiResponse(responseCode = "200", description = "Lawyer deleted successfully by name"),
+            @ApiResponse(responseCode = "404", description = DESCRIPTION_404_NAME),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
     @DeleteMapping("/byName") // ?lawyerName=
     ResponseEntity <LawyerDTO> deleteLawyerByName(@RequestParam String lawyerName){
         LawyerDTO updatedDTO = lawyerMapper.toDTO(lawyerService.deleteLawyerByName(lawyerName));
-        LOGGER.info("Lawyer: {} was deleted from the database!", lawyerName);
+        LOGGER.info("Lawyer with name: {} was deleted from the database!", lawyerName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
@@ -54,7 +55,8 @@ public class DeleteController extends ParentController{
             description = "Delete all Lawyers from the Database"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "All Lawyers deleted")
+            @ApiResponse(responseCode = "200", description = "All Lawyers deleted"),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_SHORT)
     })
     @DeleteMapping("/allLawyers")
     ResponseEntity <String> deleteAlLawyers(){

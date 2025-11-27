@@ -1,59 +1,80 @@
-package org.example.lawyerservice.controller;
+package org.example.lawyerservice.controller.webclient;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.example.lawyerservice.client.LawCaseClient;
+import org.example.lawyerservice.webclient.LawCaseWebClient;
+import org.example.lawyerservice.controller.ParentController;
+import org.example.lawyerservice.domain.DTO.LawyerDTO;
+import org.example.lawyerservice.domain.LawCase;
 import org.example.lawyerservice.domain.Lawyer;
+import org.example.lawyerservice.mapper.LawCaseMapper;
 import org.example.lawyerservice.mapper.LawyerMapper;
 import org.example.lawyerservice.service.LawyerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/lawyer/webclient")
 public class LawyerWebClientController extends ParentController {
 
-    private LawCaseClient lawCaseClient;
+    private final LawCaseWebClient lawCaseWebClient;
 
-    public LawyerWebClientController(LawyerService lawyerService, LawyerMapper lawyerMapper, LawCaseClient lawCaseClient) {
-        super(lawyerService, lawyerMapper);
-        this.lawCaseClient = lawCaseClient;
+    public LawyerWebClientController(LawyerService lawyerService, LawyerMapper lawyerMapper,
+                                     LawCaseMapper lawCaseMapper, LawCaseWebClient lawCaseWebClient) {
+        super(lawyerService, lawyerMapper, lawCaseMapper);
+        this.lawCaseWebClient = lawCaseWebClient;
     }
-    
+
+
     @Operation(
             description = "Send Request to the LawCase Service to bring the list " +
                     "of LawCases to the Lawyer by the Lawyer id - /api/lawyer/webclient/getLawCases/1"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "LawCases delivered by Id and attached to the Lawyer"),
-            @ApiResponse(responseCode = "404", description = "Lawyer was not found"),
-            @ApiResponse(responseCode = "500", description = "Some internal server error")
+            @ApiResponse(responseCode = "200", description = "LawCases delivered by Lawyer Id " +
+                    "and attached to the Lawyer"),
+            @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_SHORT)
     })
-    @GetMapping("/getLawCases/{lawyerId}") // dziala
-    ResponseEntity<Lawyer> bringLawCaseByLawyerId(@PathVariable("lawyerId") String lawyerId){
+    @GetMapping("/getLawCases" + NUMBER_QUERY_PATH)
+    ResponseEntity<LawyerDTO> getLawCaseByLawyerId(@PathVariable(NUMBER_VARIABLE_PATH) String lawyerId){
         Lawyer founded = lawyerService.getLawyerByID(lawyerId);
-        founded.setLawCaseList(lawCaseClient.findLawCasesByLawyerIdAndSendThem(lawyerId));
+        List<LawCase> lawCases = lawCaseWebClient.getLawCasesByLawyerId(lawyerId)
+                .stream()
+                .map(lawCaseMapper::toEntity)
+                .toList();
+        founded.setLawCaseList(lawCases);
         lawyerService.updateLawyerById(lawyerId, founded);
-        return new ResponseEntity<>(founded, HttpStatus.valueOf(200));
+        LOGGER.info("LawCases were attached to Lawyer by the lawyerID : {}!", lawyerId);
+        return new ResponseEntity<>(lawyerMapper.toDTO(founded), HttpStatus.valueOf(200));
     }
 
     @Operation(
-            description = "Get List of LawCases with LawCClients by Lawyer Id " +
-                    "- /api/lawyer/webclient/getLawCases-withLawClient/1"
+            description = "Send Request to the LawCase Service to bring the list " +
+                    "of LawCases with LawClients to the Lawyer by the Lawyer id - /api/lawyer/webclient/getLawCases/1"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "LawCases delivered by Id and attached to the Lawyer"),
-            @ApiResponse(responseCode = "404", description = "Lawyer was not found"),
-            @ApiResponse(responseCode = "500", description = "Some internal server error")
+            @ApiResponse(responseCode = "200", description = "LawCases with LawClients delivered by Lawyer Id " +
+                    "and attached to the Lawyer"),
+            @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_SHORT)
     })
-    @GetMapping("/getLawCases-withLawClient/{lawyerId}") // dziala
-    public Lawyer bringLawCaseWithLawClientsByLawyerId(@PathVariable("lawyerId") String lawyerId){
+    @GetMapping("/getLawCases-withLawClient" + NUMBER_QUERY_PATH)
+    public ResponseEntity<LawyerDTO> getLawCasesWithLawClientsByLawyerId(@PathVariable(NUMBER_VARIABLE_PATH)
+                                                                             String lawyerId){
         Lawyer founded = lawyerService.getLawyerByID(lawyerId);
-        founded.setLawCaseList(lawCaseClient.bringLawCaseWithLawClientsByLawyerId(lawyerId));
+        List<LawCase> lawCases = lawCaseWebClient.getLawCasesWithLawClientsByLawyerId(lawyerId)
+                .stream()
+                .map(lawCaseMapper::toEntity)
+                .toList();
+        founded.setLawCaseList(lawCases);
         lawyerService.updateLawyerById(lawyerId, founded);
-        return founded;
+        LOGGER.info("LawCases with LawClients were requested by the lawyerID : {}!", lawyerId);
+        return new ResponseEntity<>(lawyerMapper.toDTO(founded), HttpStatus.valueOf(200));
     }
 
 }
