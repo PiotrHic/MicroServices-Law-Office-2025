@@ -1,8 +1,9 @@
-package org.example.lawclientservice.controller;
+package org.example.lawclientservice.controller.crud;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.example.lawclientservice.controller.ParentController;
 import org.example.lawclientservice.domain.DTO.LawClientDTO;
 import org.example.lawclientservice.domain.LawClient;
 import org.example.lawclientservice.mapper.LawClientMapper;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/lawclient/get")
-public class GetController extends ParentController{
+public class GetController extends ParentController {
 
     public GetController(LawClientService lawClientService, LawClientMapper lawClientMapper) {
         super(lawClientService, lawClientMapper);
@@ -25,30 +26,30 @@ public class GetController extends ParentController{
             description = "Get LawClient from the database by the id  - api/lawclient/get/byId/1"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "LawClient delivered successfully"),
-            @ApiResponse(responseCode = "404", description = "LawClient was not found by id"),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+            @ApiResponse(responseCode = "200", description = "LawClient delivered successfully by id"),
+            @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
     @GetMapping("/byId"+ NUMBER_QUERY_PATH)
     ResponseEntity<LawClientDTO> getLawClientById(@PathVariable(NUMBER_VARIABLE_PATH) String lawClientId) {
-        LawClientDTO foundedById = lawClientMapper.toDTO(lawClientService.getLawClientByID(lawClientId));
-        LOGGER.info("LawClient: {} was founded by id in the database!", foundedById.getName());
-        return new ResponseEntity<>(foundedById, HttpStatus.valueOf(200));
+        LawClientDTO foundedByIdDTO = lawClientMapper.toDTO(lawClientService.getLawClientByID(lawClientId));
+        LOGGER.info("LawClient with id: {} was founded by id in the database!", foundedByIdDTO.getId());
+        return new ResponseEntity<>(foundedByIdDTO, HttpStatus.valueOf(200));
     }
 
     @Operation(
             description = "Get LawClient from the database by the name  - api/lawclient/byName?lawclientName=Piotr+Hic"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "LawClient delivered successfully"),
-            @ApiResponse(responseCode = "404", description = "LawClient was not found"),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+            @ApiResponse(responseCode = "200", description = "LawClient delivered successfully by name"),
+            @ApiResponse(responseCode = "404", description = DESCRIPTION_404_NAME),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
     @GetMapping("/byName") // ?lawyerName=
     ResponseEntity<LawClientDTO> getLawClientByName(@RequestParam(NAME_VARIABLE_PATH) String lawClientName) {
-        LawClientDTO foundedByName = lawClientMapper.toDTO(lawClientService.getLawClientByName(lawClientName));
-        LOGGER.info("LawClient: {} was founded by name in the database!", foundedByName.getName());
-        return new ResponseEntity<>(foundedByName, HttpStatus.valueOf(200));
+        LawClientDTO foundedByNameDTO = lawClientMapper.toDTO(lawClientService.getLawClientByName(lawClientName));
+        LOGGER.info("LawClient with name: {} was founded by name in the database!", foundedByNameDTO.getName());
+        return new ResponseEntity<>(foundedByNameDTO, HttpStatus.valueOf(200));
     }
 
     @Operation(
@@ -56,16 +57,15 @@ public class GetController extends ParentController{
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "LawClients delivered"),
-            @ApiResponse(responseCode = "500", description = "Empty Database"),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+            @ApiResponse(responseCode = "500", description = "Empty Database or " + DESCRIPTION_500_SHORT)
     })
     @GetMapping("/allLawClients")
     ResponseEntity<List<LawClientDTO>> getAllLawClients() {
         List<LawClient> lawClients = lawClientService.getAllLawClients();
         if (lawClients.isEmpty()) {
-            throw new LayerInstantiationException("There is no law clients in the database!");
+            throw new LayerInstantiationException("There is no LawClients in the database!");
         }
-        LOGGER.info("All law clients were founded!");
+        LOGGER.info("All LawClients were founded!");
         List<LawClientDTO> lawClientsDTOs = lawClients.stream()
                 .map(lawClientMapper::toDTO)
                 .toList();

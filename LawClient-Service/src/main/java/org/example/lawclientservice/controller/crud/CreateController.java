@@ -1,10 +1,11 @@
-package org.example.lawclientservice.controller;
+package org.example.lawclientservice.controller.crud;
 
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.example.lawclientservice.controller.ParentController;
 import org.example.lawclientservice.domain.DTO.LawClientDTO;
 import org.example.lawclientservice.domain.LawClient;
 import org.example.lawclientservice.mapper.LawClientMapper;
@@ -29,7 +30,7 @@ public class CreateController extends ParentController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "LawClient created successfully"),
-            @ApiResponse(responseCode = "500", description = "Invalid input data")
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
     @PostMapping
     ResponseEntity<LawClientDTO> createLawClient(@Valid @RequestBody LawClientDTO lawClientDTO){

@@ -1,10 +1,10 @@
-package org.example.lawclientservice.controller;
-
+package org.example.lawclientservice.controller.crud;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.example.lawclientservice.controller.ParentController;
 import org.example.lawclientservice.domain.DTO.LawClientDTO;
 import org.example.lawclientservice.domain.LawClient;
 import org.example.lawclientservice.mapper.LawClientMapper;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/lawclient/update")
-public class UpdateController extends ParentController{
+public class UpdateController extends ParentController {
 
     public UpdateController(LawClientService lawClientService, LawClientMapper lawClientMapper) {
         super(lawClientService, lawClientMapper);
@@ -25,9 +25,9 @@ public class UpdateController extends ParentController{
             description = "Update LawClient from the database by the id  - /api/lawclient/update/byId/1"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "LawClient delivered successfully"),
-            @ApiResponse(responseCode = "404", description = "LawClient was not found by id"),
-            @ApiResponse(responseCode = "500", description = "Parameter was not correct or Internal Server Error")
+            @ApiResponse(responseCode = "200", description = "LawClient updated successfully by id"),
+            @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
     @PutMapping("/byId" + NUMBER_QUERY_PATH)
     ResponseEntity<LawClientDTO> updateLawClientById(@PathVariable(NUMBER_VARIABLE_PATH) String lawClientId,
@@ -35,7 +35,7 @@ public class UpdateController extends ParentController{
         LawClient toUpdate = lawClientMapper.toEntity(lawClientDTO);
         LawClient updated = lawClientService.updateLawClientById(lawClientId, toUpdate);
         LawClientDTO updatedDTO = lawClientMapper.toDTO(updated);
-        LOGGER.info("LawClient: {} was updated by id to the database!", lawClientId);
+        LOGGER.info("LawClient with id: {} was updated in the database!", lawClientId);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 
@@ -44,17 +44,17 @@ public class UpdateController extends ParentController{
                     "- /api/lawclient/update/byName?lawclientName=Piotr+Hic"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "LawClient delivered successfully"),
-            @ApiResponse(responseCode = "404", description = "LawClient was not found by name"),
-            @ApiResponse(responseCode = "500", description = "Parameter was not correct or Internal Server Error")
+            @ApiResponse(responseCode = "200", description = "LawClient updated successfully by name"),
+            @ApiResponse(responseCode = "404", description = DESCRIPTION_404_NAME),
+            @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
     @PutMapping("/byName") // ?lawyerName=
-    ResponseEntity<LawClientDTO> updateLawClientByName(@RequestParam String lawClientName,@Valid
-    @RequestBody LawClientDTO lawClientDTO){
+    ResponseEntity<LawClientDTO> updateLawClientByName(@RequestParam String lawClientName,
+                                                       @Valid @RequestBody LawClientDTO lawClientDTO){
         LawClient toUpdate = lawClientMapper.toEntity(lawClientDTO);
         LawClient updated = lawClientService.updateLawClientByName(lawClientName, toUpdate);
         LawClientDTO updatedDTO = lawClientMapper.toDTO(updated);
-        LOGGER.info("LawClient: {} was updated by name to the database!", lawClientName);
+        LOGGER.info("LawClient with name: {} was updated in the database!", lawClientName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
     }
 }
