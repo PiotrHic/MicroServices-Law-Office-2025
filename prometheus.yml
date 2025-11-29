@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: "API-Gateway"
+    static_configs:
+      - targets: ["API-Gateway:8010"]
+
+  - job_name: "Eureka-Registry"
+    static_configs:
+      - targets: ["Eureka-Registry:8761"]
+
+  - job_name: "Lawyer-Service"
+    static_configs:
+      - targets: ["Lawyer-Service:8011"]
+
+  - job_name: "LawClient-Service"
+    static_configs:
+      - targets: [ "LawCase-Service:8012" ]
+
+  - job_name: "LawCase-Service"
+    static_configs:
+      - targets: [ "LawClient-Service:8013" ]
