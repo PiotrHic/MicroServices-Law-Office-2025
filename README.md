@@ -14,6 +14,7 @@ Functionalities:
 - Validation 
 - API-Gateway
 - Micrometer Tracing
+- Metrics
 
 Technologies:
 - Testcontainers
@@ -30,3 +31,5 @@ Technologies:
 - HTTPExchange
 - WebClient
 - Zipkin
+- Prometheus
+- Grafana

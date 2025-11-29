@@ -43,6 +43,8 @@ public class LawClientServiceImpl implements LawClientService {
         toUpdate.setId(lawClientId);
         toUpdate.setName(lawClient.getName());
         toUpdate.setLawCaseList(lawClient.getLawCaseList());
+        lawClientRepository.deleteLawClientById(lawClientId);
+        lawClientRepository.save(toUpdate);
         return toUpdate;
     }
 
@@ -52,6 +54,8 @@ public class LawClientServiceImpl implements LawClientService {
         toUpdate.setId(lawClient.getId());
         toUpdate.setName(lawClient.getName());
         toUpdate.setLawCaseList(lawClient.getLawCaseList());
+        lawClientRepository.deleteLawClientById(toUpdate.getId());
+        lawClientRepository.save(toUpdate);
         return toUpdate;
     }
 
