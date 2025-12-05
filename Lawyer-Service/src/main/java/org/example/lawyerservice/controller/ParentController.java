@@ -23,4 +23,5 @@ public class ParentController {
     protected final String DESCRIPTION_404_NAME = "Lawyer was not found by name";
     protected final String DESCRIPTION_500_SHORT = "Some internal server error";
     protected final String DESCRIPTION_500_LONG = "Invalid input data or " + DESCRIPTION_500_SHORT;
+
 }

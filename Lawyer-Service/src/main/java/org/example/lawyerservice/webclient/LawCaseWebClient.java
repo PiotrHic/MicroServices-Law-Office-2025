@@ -1,5 +1,6 @@
 package org.example.lawyerservice.webclient;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.example.lawyerservice.domain.DTO.LawCaseDTO;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.GetExchange;
@@ -18,5 +19,6 @@ public interface LawCaseWebClient {
 
     @GetExchange("/api/lawcase/webclient/sendLawCases-WithLawClients" + ID_PATH)
     public List<LawCaseDTO> getLawCasesWithLawClientsByLawyerId(@PathVariable(ID) String lawyerId);
+
 
 }

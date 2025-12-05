@@ -1,5 +1,8 @@
 package org.example.lawyerservice.controller.webclient;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -21,6 +24,8 @@ import java.util.List;
 @RequestMapping("/api/lawyer/webclient")
 public class LawyerWebClientController extends ParentController {
 
+    private static final String CB = "lawyer";
+
     private final LawCaseWebClient lawCaseWebClient;
 
     public LawyerWebClientController(LawyerService lawyerService, LawyerMapper lawyerMapper,
@@ -28,7 +33,6 @@ public class LawyerWebClientController extends ParentController {
         super(lawyerService, lawyerMapper, lawCaseMapper);
         this.lawCaseWebClient = lawCaseWebClient;
     }
-
 
     @Operation(
             description = "Send Request to the LawCase Service to bring the list " +
@@ -40,6 +44,9 @@ public class LawyerWebClientController extends ParentController {
             @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
             @ApiResponse(responseCode = "500", description = DESCRIPTION_500_SHORT)
     })
+    @CircuitBreaker(name=CB, fallbackMethod = "testFallBack")
+    @Retry(name=CB)
+    @RateLimiter(name=CB)
     @GetMapping("/getLawCases" + NUMBER_QUERY_PATH)
     ResponseEntity<LawyerDTO> getLawCaseByLawyerId(@PathVariable(NUMBER_VARIABLE_PATH) String lawyerId){
         Lawyer founded = lawyerService.getLawyerByID(lawyerId);
@@ -63,6 +70,10 @@ public class LawyerWebClientController extends ParentController {
             @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
             @ApiResponse(responseCode = "500", description = DESCRIPTION_500_SHORT)
     })
+
+    @CircuitBreaker(name=CB, fallbackMethod = "testFallBack")
+    @Retry(name=CB)
+    @RateLimiter(name=CB)
     @GetMapping("/getLawCases-withLawClient" + NUMBER_QUERY_PATH)
     public ResponseEntity<LawyerDTO> getLawCasesWithLawClientsByLawyerId(@PathVariable(NUMBER_VARIABLE_PATH)
                                                                              String lawyerId){
@@ -77,4 +88,13 @@ public class LawyerWebClientController extends ParentController {
         return new ResponseEntity<>(lawyerMapper.toDTO(founded), HttpStatus.valueOf(200));
     }
 
+    public ResponseEntity<LawyerDTO> testFallBack(String lawyerId, Throwable t) {
+        LawyerDTO fallbackDTO = new LawyerDTO();
+        fallbackDTO.setId(lawyerId);
+        fallbackDTO.setLawCaseList(List.of()); // empty fallback list
+
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(fallbackDTO);
+    }
 }
