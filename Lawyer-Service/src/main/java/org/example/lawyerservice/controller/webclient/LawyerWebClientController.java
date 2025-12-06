@@ -91,7 +91,7 @@ public class LawyerWebClientController extends ParentController {
     public ResponseEntity<LawyerDTO> testFallBack(String lawyerId, Throwable t) {
         LawyerDTO fallbackDTO = new LawyerDTO();
         fallbackDTO.setId(lawyerId);
-        fallbackDTO.setLawCaseList(List.of()); // empty fallback list
+        fallbackDTO.setLawCaseList(List.of());
 
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)

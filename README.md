@@ -15,6 +15,7 @@ Functionalities:
 - API-Gateway
 - Micrometer Tracing
 - Metrics
+- Circuit Breaker / Retry / Rate Limiter
 
 Technologies:
 - Testcontainers
@@ -33,3 +34,4 @@ Technologies:
 - Zipkin
 - Prometheus
 - Grafana
+- Resilience4j
