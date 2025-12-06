@@ -19,6 +19,8 @@ import java.util.List;
 @RequestMapping("/api/lawcase/webclient")
 public class LawyerWebClientController extends ParentController {
 
+
+
     private final LawClientWebClient lawClientWebClient;
 
     public LawyerWebClientController(LawCaseService lawCaseService, LawCaseMapper lawCaseMapper,
@@ -35,7 +37,7 @@ public class LawyerWebClientController extends ParentController {
             @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
             @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
-    @GetMapping("/sendLawCases" + LAWYER_NUMBER_QUERY_PATH) // dziala
+    @GetMapping("/sendLawCases" + LAWYER_NUMBER_QUERY_PATH)
     public ResponseEntity<List<LawCaseDTO>> findLawCasesByLawyerIdAndSendThem(
             @PathVariable(LAWYER_NAME_VARIABLE_PATH) String lawyerId) {
         List<LawCase> lawCasesToSend = lawCaseService.getAllLawCases()
@@ -69,5 +71,14 @@ public class LawyerWebClientController extends ParentController {
                                 (lawClientWebClient.findLawClientByLawClientId
                                         (lawCase.getLawClientId())));
         return new ResponseEntity<>(lawCasesToSend, HttpStatus.valueOf(200));
+    }
+
+    public ResponseEntity<LawCaseDTO> testFallBack(String lawClientId, Throwable t) {
+        LawCaseDTO fallbackDTO = new LawCaseDTO();
+        fallbackDTO.setId(lawClientId);
+
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(fallbackDTO);
     }
 }

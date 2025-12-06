@@ -1,5 +1,8 @@
 package org.example.lawcaseservice.controller.webclient.lawclient;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -40,7 +43,7 @@ public class LawClientWebClientController extends ParentController {
             @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
             @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
-    @GetMapping("/toLawClient/{lawClientId}") // dziala
+    @GetMapping("/toLawClient" + LAWCLIENT_NUMBER_QUERY_PATH)
     public ResponseEntity<List<LawCaseDTO>> sendLawCasesByLawClientId(
             @PathVariable(LAWCLIENT_NAME_VARIABLE_PATH) String lawClientId){
         List <LawCase> lawCases = lawCaseService.getAllLawCases()
@@ -60,7 +63,7 @@ public class LawClientWebClientController extends ParentController {
             @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
             @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
-    @GetMapping("/toLawClient-withLawyer/{lawClientId}")
+    @GetMapping("/toLawClient-withLawyer" + LAWCLIENT_NUMBER_QUERY_PATH)
     public ResponseEntity<List<LawCaseDTO>> sendLawCasesWithLawyerToLawClient(
             @PathVariable(LAWCLIENT_NAME_VARIABLE_PATH) String lawClientId){
         List<LawCase> founded = lawCaseService.getAllLawCases()
@@ -76,4 +79,6 @@ public class LawClientWebClientController extends ParentController {
         List <LawCaseDTO> dtos = founded.stream().map(lawCaseMapper::toDTO).toList();
         return new ResponseEntity<>(dtos, HttpStatus.valueOf(200));
     }
+
+
 }

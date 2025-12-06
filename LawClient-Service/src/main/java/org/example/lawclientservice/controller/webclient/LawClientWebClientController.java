@@ -26,7 +26,7 @@ import java.util.List;
 @RequestMapping("/api/lawclient/webclient")
 public class LawClientWebClientController extends ParentController {
 
-    private static final String CB = "lawcase";
+    private static final String CB = "lawclient";
 
     LawCaseWebClient lawCaseWebClient;
 

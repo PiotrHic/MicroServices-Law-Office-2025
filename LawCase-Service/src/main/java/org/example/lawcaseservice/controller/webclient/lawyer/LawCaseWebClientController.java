@@ -1,5 +1,8 @@
 package org.example.lawcaseservice.controller.webclient.lawyer;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -24,6 +27,8 @@ import java.util.List;
 @RequestMapping("/api/lawcase/webclient")
 public class LawCaseWebClientController extends ParentController {
 
+    private static final String CB = "lawcase";
+
     private final LawyerWebClient lawyerWebClient;
 
     public LawCaseWebClientController(LawCaseService lawCaseService, LawCaseMapper lawCaseMapper,
@@ -41,9 +46,12 @@ public class LawCaseWebClientController extends ParentController {
             @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
             @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
-
-    @GetMapping("/getLawyer/{lawyerId}")
-    public ResponseEntity<List<LawCaseDTO>> getLawyerByLawyerId(@PathVariable("lawyerId") String lawyerId) {
+    @CircuitBreaker(name=CB, fallbackMethod = "testFallBack")
+    @Retry(name=CB)
+    @RateLimiter(name=CB)
+    @GetMapping("/getLawyer" + LAWYER_NUMBER_QUERY_PATH)
+    public ResponseEntity<List<LawCaseDTO>> getLawyerByLawyerId(@PathVariable(LAWYER_NAME_VARIABLE_PATH)
+                                                                    String lawyerId) {
         List<LawCase> listOfFounded = lawCaseService
                 .getAllLawCases()
                 .stream()
@@ -59,6 +67,15 @@ public class LawCaseWebClientController extends ParentController {
                 .map(lawCaseMapper::toDTO)
                 .toList();
         return new ResponseEntity<>(dtos, HttpStatus.valueOf(200));
+    }
+
+    public ResponseEntity<List<LawCaseDTO>> testFallBack(String lawyerId, Throwable t) {
+        LawCaseDTO fallbackDTO = new LawCaseDTO();
+        fallbackDTO.setLawyerId(lawyerId);
+
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(List.of(fallbackDTO));
     }
 
 }

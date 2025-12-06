@@ -1,11 +1,15 @@
 package org.example.lawcaseservice.controller.webclient.lawclient;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.example.lawcaseservice.controller.ParentController;
 import org.example.lawcaseservice.domain.DTO.LawCaseDTO;
 import org.example.lawcaseservice.domain.LawCase;
+import org.example.lawcaseservice.domain.LawClient;
 import org.example.lawcaseservice.mapper.LawCaseMapper;
 import org.example.lawcaseservice.mapper.LawyerMapper;
 import org.example.lawcaseservice.service.LawCaseService;
@@ -23,6 +27,8 @@ import java.util.List;
 @RequestMapping("/api/lawcase/webclient")
 public class LawCaseWebClient extends ParentController {
 
+    private static final String CB = "lawcase";
+
     private LawClientWebClient lawClientWebClient;
 
     public LawCaseWebClient(LawCaseService lawCaseService, LawCaseMapper lawCaseMapper,
@@ -39,7 +45,10 @@ public class LawCaseWebClient extends ParentController {
             @ApiResponse(responseCode = "404", description = DESCRIPTION_404_ID),
             @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
-    @GetMapping("/getLawClient" + LAWCLIENT_NUMBER_QUERY_PATH) // dziala
+    @CircuitBreaker(name=CB, fallbackMethod = "testFallBack")
+    @Retry(name=CB)
+    @RateLimiter(name=CB)
+    @GetMapping("/getLawClient" + LAWCLIENT_NUMBER_QUERY_PATH)
     public ResponseEntity<List<LawCaseDTO>> bringLawClientForLawCase(
             @PathVariable(LAWCLIENT_NAME_VARIABLE_PATH) String lawClientId){
 
@@ -47,6 +56,7 @@ public class LawCaseWebClient extends ParentController {
                 .stream()
                 .filter(lawcase -> lawcase.getLawClientId().equals(lawClientId))
                 .toList();
+        LawClient forCircuitBreaker = lawClientWebClient.findLawClientByLawClientId(lawClientId);
         for(LawCase lawCase : founded){
             lawCase.setLawClient(lawClientWebClient.findLawClientByLawClientId(lawClientId));
             lawCaseService.updateLawCaseById(lawCase.getId(),lawCase);
@@ -56,5 +66,14 @@ public class LawCaseWebClient extends ParentController {
                 .map(lawCaseMapper::toDTO)
                 .toList();
         return new ResponseEntity<>(dtos, HttpStatus.valueOf(200));
+    }
+
+    public ResponseEntity<List<LawCaseDTO>> testFallBack(String lawClientId, Throwable t) {
+        LawCaseDTO fallbackDTO = new LawCaseDTO();
+        fallbackDTO.setLawClientId(lawClientId);
+
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(List.of(fallbackDTO));
     }
 }
