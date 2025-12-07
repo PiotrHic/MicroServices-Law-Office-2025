@@ -48,7 +48,7 @@ public class UpdateController extends ParentController {
             @ApiResponse(responseCode = "404", description = DESCRIPTION_404_NAME),
             @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
-    @PutMapping("/byName") // ?lawyerName=
+    @PutMapping("/byName") // ?lawCaseName=
     ResponseEntity<LawCaseDTO> updateLawCaseByName(@RequestParam String lawCaseName,
                                                    @Valid @RequestBody LawCaseDTO lawCaseDTO){
         LawCase toUpdate = lawCaseMapper.toEntity(lawCaseDTO);

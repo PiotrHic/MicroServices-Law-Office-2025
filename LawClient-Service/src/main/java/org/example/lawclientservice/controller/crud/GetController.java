@@ -45,7 +45,7 @@ public class GetController extends ParentController {
             @ApiResponse(responseCode = "404", description = DESCRIPTION_404_NAME),
             @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
-    @GetMapping("/byName") // ?lawyerName=
+    @GetMapping("/byName") //
     ResponseEntity<LawClientDTO> getLawClientByName(@RequestParam(NAME_VARIABLE_PATH) String lawClientName) {
         LawClientDTO foundedByNameDTO = lawClientMapper.toDTO(lawClientService.getLawClientByName(lawClientName));
         LOGGER.info("LawClient with name: {} was founded by name in the database!", foundedByNameDTO.getName());

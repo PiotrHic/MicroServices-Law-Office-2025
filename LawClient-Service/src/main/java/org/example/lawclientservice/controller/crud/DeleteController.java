@@ -44,7 +44,7 @@ public class DeleteController extends ParentController {
             @ApiResponse(responseCode = "404", description = DESCRIPTION_404_NAME),
             @ApiResponse(responseCode = "500", description = DESCRIPTION_500_LONG)
     })
-    @DeleteMapping("/byName") // ?lawyerName=
+    @DeleteMapping("/byName")
     ResponseEntity <LawClientDTO> deleteLawClientByName(@RequestParam String lawClientName){
         LawClient deleted = lawClientService.deleteLawClientByName(lawClientName);
         LawClientDTO updatedDTO = lawClientMapper.toDTO(deleted);
