@@ -14,12 +14,15 @@ public class RouteConfig {
         return builder.routes()
                 .route("lawyer-service", r -> r
                         .path("/api/lawyer/**")
+                        .filters(f -> f.stripPrefix(0))
                         .uri("lb://LAWYER-SERVICE"))
                 .route("lawcase-service", r -> r
                         .path("/api/lawcase/**")
+                        .filters(f -> f.stripPrefix(0))
                         .uri("lb://LAWCASE-SERVICE"))
                 .route("lawclient-service", r -> r
                         .path("/api/lawclient/**")
+                        .filters(f -> f.stripPrefix(0))
                         .uri("lb://LAWCLIENT-SERVICE"))
                 .build();
     }
