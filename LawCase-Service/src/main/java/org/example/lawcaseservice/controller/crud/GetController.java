@@ -49,7 +49,7 @@ public class GetController extends ParentController {
     @GetMapping("/byName")
     ResponseEntity<LawCaseDTO> getLawCaseByName(@RequestParam(NAME_VARIABLE_PATH) String lawCaseName) {
         LawCaseDTO foundedByName = lawCaseMapper.toDTO(lawCaseService.getLawCaseByName(lawCaseName));
-        LOGGER.info("LawCase: {} was founded by name in the database!", foundedByName.getName());
+        LOGGER.info("LawCase: {} was founded by name in the database!", lawCaseName);
         return new ResponseEntity<>(foundedByName, HttpStatus.valueOf(200));
     }
 

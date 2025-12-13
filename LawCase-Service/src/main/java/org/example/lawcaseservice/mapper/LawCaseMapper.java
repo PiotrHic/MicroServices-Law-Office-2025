@@ -18,7 +18,7 @@ public class LawCaseMapper {
                 .lawyerId(lawcase.getLawyerId())
                 .lawyer(lawcase.getLawyer())
                 .lawClient(lawcase.getLawClient())
-                .LawClientId(lawcase.getLawClientId())
+                .lawClientId(lawcase.getLawClientId())
                 .build();
     }
 
@@ -32,7 +32,7 @@ public class LawCaseMapper {
                 .lawyerId(dto.getLawyerId())
                 .lawyer(dto.getLawyer())
                 .lawClient(dto.getLawClient())
-                .LawClientId(dto.getLawClientId())
+                .lawClientId(dto.getLawClientId())
                 .build();
     }
 }

@@ -28,14 +28,14 @@ public class LawCase {
     @Size(min=4, message = "Name of the case must have at least 4 characters!")
     private String name;
     private String lawyerId;
-    private String LawClientId;
+    private String lawClientId;
     private Lawyer lawyer;
     private LawClient lawClient;
 
     public LawCase(String name, String lawyerId, String lawClientId, Lawyer lawyer, LawClient lawClient) {
         this.name = name;
         this.lawyerId = lawyerId;
-        LawClientId = lawClientId;
+        this.lawClientId = lawClientId;
         this.lawyer = lawyer;
         this.lawClient = lawClient;
     }
