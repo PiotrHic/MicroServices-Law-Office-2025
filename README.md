@@ -16,6 +16,8 @@ Functionalities:
 - Micrometer Tracing
 - Metrics
 - Circuit Breaker / Retry / Rate Limiter
+- VERY basic security
+- Basic Frontend by Vite
 
 Technologies:
 - Testcontainers
@@ -35,3 +37,4 @@ Technologies:
 - Prometheus
 - Grafana
 - Resilience4j
+- Vite 
