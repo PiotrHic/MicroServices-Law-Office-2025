@@ -33,6 +33,7 @@ public class UpdateController extends ParentController {
     @PutMapping("/byId" + NUMBER_QUERY_PATH)
     ResponseEntity<LawyerDTO> updateLawyerById(@PathVariable(NUMBER_VARIABLE_PATH) String lawyerId,
                                                @Valid @RequestBody LawyerDTO lawyerDTO) {
+        LOGGER.info("BODY = {}", lawyerDTO);
         Lawyer toUpdate = lawyerMapper.toEntity(lawyerDTO);
         Lawyer updated = lawyerService.updateLawyerById(lawyerId, toUpdate);
         LawyerDTO updatedDTO = lawyerMapper.toDTO(updated);
@@ -52,8 +53,9 @@ public class UpdateController extends ParentController {
     @PutMapping("/byName") // ?lawyerName=
     ResponseEntity<LawyerDTO> updateLawyerByName(@RequestParam String lawyerName,
                                                  @Valid @RequestBody LawyerDTO lawyerDTO){
+        LOGGER.info("BODY = {}", lawyerDTO);
         Lawyer toUpdate = lawyerMapper.toEntity(lawyerDTO);
-        Lawyer updated = lawyerService.updateLawyerByName(toUpdate.getName(), toUpdate);
+        Lawyer updated = lawyerService.updateLawyerByName(lawyerName, toUpdate);
         LawyerDTO updatedDTO = lawyerMapper.toDTO(updated);
         LOGGER.info("Lawyer with name: {} was updated by name to the database!", lawyerName);
         return new ResponseEntity<>(updatedDTO, HttpStatus.valueOf(200));
