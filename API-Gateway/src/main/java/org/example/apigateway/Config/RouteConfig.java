@@ -26,5 +26,4 @@ public class RouteConfig {
                         .uri("lb://LAWCLIENT-SERVICE"))
                 .build();
     }
-
 }
