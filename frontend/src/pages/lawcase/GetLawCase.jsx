@@ -17,15 +17,21 @@ import {
 import axios from "axios";
 
 export default function GetLawCase() {
+    const navigate = useNavigate();
+
     const [lawCases, setLawCases] = useState([]);
     const [singleLawCase, setSingleLawCase] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [idInput, setIdInput] = useState("");
-    const [nameInput, setNameInput] = useState("");
 
-    const navigate = useNavigate();
+    const [lawCaseIdInput, setLawCaseIdInput] = useState("");
+    const [lawCaseNameInput, setLawCaseNameInput] = useState("");
+    const [lawyerIdInput, setLawyerIdInput] = useState("");
+    const [lawClientIdInput, setLawClientIdInput] = useState("");
 
+    /* =========================
+       FETCH ALL LAWCASES
+    ========================= */
     const fetchAllLawCases = async () => {
         setLoading(true);
         setError("");
@@ -35,15 +41,18 @@ export default function GetLawCase() {
             const res = await axios.get("/api/lawcase/get/allLawCases");
             setLawCases(res.data);
         } catch (err) {
-            setError(err.response?.data?.message || err.message || "Something went wrong!");
+            setError(err.response?.data?.message || err.message);
             setLawCases([]);
         } finally {
             setLoading(false);
         }
     };
 
+    /* =========================
+       FETCH BY LAWCASE ID
+    ========================= */
     const fetchLawCaseById = async () => {
-        if (!idInput.trim()) return;
+        if (!lawCaseIdInput.trim()) return;
 
         setLoading(true);
         setError("");
@@ -51,17 +60,22 @@ export default function GetLawCase() {
         setSingleLawCase(null);
 
         try {
-            const res = await axios.get(`/api/lawcase/get/byId/${idInput}`);
+            const res = await axios.get(
+                `/api/lawcase/get/byId/${lawCaseIdInput}`
+            );
             setSingleLawCase(res.data);
         } catch (err) {
-            setError(err.response?.data?.message || err.message || "Something went wrong!");
+            setError(err.response?.data?.message || err.message);
         } finally {
             setLoading(false);
         }
     };
 
+    /* =========================
+       FETCH BY LAWCASE NAME
+    ========================= */
     const fetchLawCaseByName = async () => {
-        if (!nameInput.trim()) return;
+        if (!lawCaseNameInput.trim()) return;
 
         setLoading(true);
         setError("");
@@ -70,11 +84,57 @@ export default function GetLawCase() {
 
         try {
             const res = await axios.get("/api/lawcase/get/byName", {
-                params: { lawCaseName: nameInput } // <- dokładnie tak jak w backendzie
+                params: { lawCaseName: lawCaseNameInput }
             });
-            setSingleLawCase(res.data); // pamiętaj, żeby ustawić wynik!
+            setSingleLawCase(res.data);
         } catch (err) {
-            setError(err.response?.data?.message || err.message || "Something went wrong!");
+            setError(err.response?.data?.message || err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    /* =========================
+       ATTACH LAWYER (WEBCLIENT)
+    ========================= */
+    const fetchLawyerToLawCasesByLawyerId = async () => {
+        if (!lawyerIdInput.trim()) return;
+
+        setLoading(true);
+        setError("");
+        setLawCases([]);
+        setSingleLawCase(null);
+
+        try {
+            const res = await axios.get(
+                `/api/lawcase/webclient/getLawyer/${lawyerIdInput}`
+            );
+            setLawCases(res.data); // List<LawCaseDTO>
+        } catch (err) {
+            setError(err.response?.data?.message || err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    /* =========================
+       ATTACH LAWCLIENT (WEBCLIENT)
+    ========================= */
+    const fetchLawClientToLawCasesByLawClientId = async () => {
+        if (!lawClientIdInput.trim()) return;
+
+        setLoading(true);
+        setError("");
+        setLawCases([]);
+        setSingleLawCase(null);
+
+        try {
+            const res = await axios.get(
+                `/api/lawcase/webclient/getLawClient/${lawClientIdInput}`
+            );
+            setLawCases(res.data); // List<LawCaseDTO>
+        } catch (err) {
+            setError(err.response?.data?.message || err.message);
         } finally {
             setLoading(false);
         }
@@ -89,119 +149,154 @@ export default function GetLawCase() {
             }}
         >
             <Container maxWidth="md">
-                <Paper
-                    elevation={12}
-                    sx={{
-                        p: 5,
-                        borderRadius: 3,
-                        background: "rgba(255,255,255,0.95)"
-                    }}
-                >
+                <Paper elevation={12} sx={{ p: 5, borderRadius: 3 }}>
                     <Stack spacing={3}>
                         <Typography
                             variant="h3"
-                            sx={{
-                                fontWeight: "bold",
-                                textAlign: "center",
-                                color: "#512da8"
-                            }}
+                            sx={{ fontWeight: "bold", textAlign: "center" }}
                         >
                             Law Case Finder
                         </Typography>
 
-                        {/* 🔙 BACK */}
                         <Button
                             variant="outlined"
-                            color="inherit"
                             onClick={() => navigate("/lawcases")}
-                            sx={{ width: "220px", alignSelf: "center" }}
+                            sx={{ width: 240, alignSelf: "center" }}
                         >
                             Back to LawCase Service
                         </Button>
 
-                        {/* Controls */}
+                        {/* CONTROLS */}
                         <Stack
                             direction={{ xs: "column", sm: "row" }}
                             spacing={2}
-                            sx={{ justifyContent: "center", flexWrap: "wrap" }}
+                            justifyContent="center"
+                            flexWrap="wrap"
                         >
                             <Button
                                 variant="contained"
-                                color="primary"
                                 onClick={fetchAllLawCases}
                             >
-                                All Law Cases
+                                All LawCases
                             </Button>
 
                             <TextField
-                                label="Search by ID"
-                                value={idInput}
-                                onChange={(e) => setIdInput(e.target.value)}
+                                label="LawCase ID"
                                 size="small"
-                                sx={{ width: 160 }}
+                                value={lawCaseIdInput}
+                                onChange={(e) =>
+                                    setLawCaseIdInput(e.target.value)
+                                }
                             />
                             <Button
                                 variant="outlined"
-                                color="secondary"
                                 onClick={fetchLawCaseById}
                             >
                                 Find by ID
                             </Button>
 
                             <TextField
-                                label="Search by Name"
-                                value={nameInput}
-                                onChange={(e) => setNameInput(e.target.value)}
+                                label="LawCase Name"
                                 size="small"
-                                sx={{ width: 200 }}
+                                value={lawCaseNameInput}
+                                onChange={(e) =>
+                                    setLawCaseNameInput(e.target.value)
+                                }
                             />
                             <Button
                                 variant="outlined"
-                                color="secondary"
                                 onClick={fetchLawCaseByName}
                             >
                                 Find by Name
                             </Button>
+
+                            <TextField
+                                label="Lawyer ID"
+                                size="small"
+                                value={lawyerIdInput}
+                                onChange={(e) =>
+                                    setLawyerIdInput(e.target.value)
+                                }
+                            />
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={fetchLawyerToLawCasesByLawyerId}
+                            >
+                                Fetch & Attach Lawyer
+                            </Button>
+
+                            <TextField
+                                label="LawClient ID"
+                                size="small"
+                                value={lawClientIdInput}
+                                onChange={(e) =>
+                                    setLawClientIdInput(e.target.value)
+                                }
+                            />
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={fetchLawClientToLawCasesByLawClientId}
+                            >
+                                Fetch & Attach LawClient
+                            </Button>
                         </Stack>
 
                         {loading && (
-                            <CircularProgress sx={{ mt: 2, alignSelf: "center" }} />
+                            <CircularProgress sx={{ alignSelf: "center" }} />
                         )}
 
-                        {error && (
-                            <Alert severity="error" sx={{ mt: 2, fontWeight: "bold" }}>
-                                {error}
-                            </Alert>
-                        )}
+                        {error && <Alert severity="error">{error}</Alert>}
 
-                        {/* LISTA */}
+                        {/* LIST */}
                         {!loading && lawCases.length > 0 && (
-                            <Stack spacing={2} sx={{ mt: 2 }}>
+                            <Stack spacing={2}>
                                 {lawCases.map((lawCase) => (
-                                    <Card
-                                        key={lawCase.id}
-                                        sx={{
-                                            background: "linear-gradient(135deg, #ffffff, #ede7f6)",
-                                            transition: "0.3s",
-                                            "&:hover": { transform: "scale(1.02)" }
-                                        }}
-                                    >
+                                    <Card key={lawCase.id}>
                                         <CardContent>
                                             <Typography variant="h6">
                                                 {lawCase.name}
                                             </Typography>
-                                            <Typography variant="body2">
-                                                <strong>ID:</strong> {lawCase.id}
+
+                                            <Typography>
+                                                <strong>ID:</strong>{" "}
+                                                {lawCase.id}
                                             </Typography>
-                                            <Divider sx={{ my: 1 }} />
-                                            <Typography variant="body2">
+
+                                            <Typography>
                                                 <strong>Lawyer ID:</strong>{" "}
                                                 {lawCase.lawyerId || "—"}
                                             </Typography>
-                                            <Typography variant="body2">
-                                                <strong>Client ID:</strong>{" "}
+
+                                            <Typography>
+                                                <strong>LawClient ID:</strong>{" "}
                                                 {lawCase.lawClientId || "—"}
                                             </Typography>
+
+                                            {lawCase.lawyer && (
+                                                <>
+                                                    <Divider sx={{ my: 1 }} />
+                                                    <Typography variant="subtitle2">
+                                                        👨‍⚖️ Lawyer
+                                                    </Typography>
+                                                    <Typography variant="body2">
+                                                        {lawCase.lawyer.name}
+                                                    </Typography>
+                                                </>
+                                            )}
+
+                                            {lawCase.lawClient && (
+                                                <>
+                                                    <Divider sx={{ my: 1 }} />
+                                                    <Typography variant="subtitle2">
+                                                        🧑‍💼 Law Client
+                                                    </Typography>
+                                                    <Typography variant="body2">
+                                                        {lawCase.lawClient.name}
+                                                    </Typography>
+                                                </>
+                                            )}
                                         </CardContent>
                                     </Card>
                                 ))}
@@ -210,28 +305,15 @@ export default function GetLawCase() {
 
                         {/* SINGLE */}
                         {!loading && singleLawCase && (
-                            <Card
-                                sx={{
-                                    mt: 2,
-                                    p: 2,
-                                    background: "linear-gradient(135deg, #c5cae9, #9fa8da)"
-                                }}
-                            >
+                            <Card>
                                 <CardContent>
-                                    <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                                    <Typography variant="h5">
                                         {singleLawCase.name}
                                     </Typography>
                                     <Divider sx={{ my: 1 }} />
                                     <Typography>
-                                        <strong>ID:</strong> {singleLawCase.id}
-                                    </Typography>
-                                    <Typography>
-                                        <strong>Lawyer ID:</strong>{" "}
-                                        {singleLawCase.lawyerId || "—"}
-                                    </Typography>
-                                    <Typography>
-                                        <strong>Client ID:</strong>{" "}
-                                        {singleLawCase.lawClientId || "—"}
+                                        <strong>ID:</strong>{" "}
+                                        {singleLawCase.id}
                                     </Typography>
                                 </CardContent>
                             </Card>

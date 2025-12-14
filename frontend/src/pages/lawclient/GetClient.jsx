@@ -13,7 +13,9 @@ import {
     List,
     ListItem,
     ListItemText,
-    Divider
+    Divider,
+    Card,
+    CardContent
 } from "@mui/material";
 import axios from "axios";
 
@@ -31,7 +33,7 @@ export default function GetClient() {
         setClients([]);
     };
 
-    const fetchClientById = async () => {
+    const fetchClientById = async (withLawCases = false) => {
         if (!id.trim()) {
             setError("ID is required!");
             return;
@@ -39,7 +41,10 @@ export default function GetClient() {
         resetAlerts();
         setLoading(true);
         try {
-            const res = await axios.get(`/api/lawclient/get/byId/${id}`);
+            const url = withLawCases
+                ? `/api/lawclient/webclient/getLawCases-withLawyer/${id}`
+                : `/api/lawclient/get/byId/${id}`;
+            const res = await axios.get(url);
             setClients([res.data]); // wrap in array for uniform display
         } catch (err) {
             console.error(err);
@@ -58,7 +63,7 @@ export default function GetClient() {
         setLoading(true);
         try {
             const res = await axios.get(`/api/lawclient/get/byName?lawClientName=${encodeURIComponent(name)}`);
-            setClients([res.data]); // wrap in array
+            setClients([res.data]);
         } catch (err) {
             console.error(err);
             setError(err.response?.data?.message || err.message);
@@ -106,14 +111,24 @@ export default function GetClient() {
                             onChange={(e) => setId(e.target.value)}
                             size="small"
                         />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={fetchClientById}
-                            disabled={loading}
-                        >
-                            {loading ? <CircularProgress size={24} /> : "Get by ID"}
-                        </Button>
+                        <Stack direction="row" spacing={2}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => fetchClientById(false)}
+                                disabled={loading}
+                            >
+                                {loading ? <CircularProgress size={24} /> : "Get by ID"}
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => fetchClientById(true)}
+                                disabled={loading}
+                            >
+                                {loading ? <CircularProgress size={24} /> : "Get by ID with Cases"}
+                            </Button>
+                        </Stack>
 
                         {/* Get by Name */}
                         <TextField
@@ -143,21 +158,29 @@ export default function GetClient() {
 
                         {error && <Alert severity="error">{error}</Alert>}
 
-                        {clients.length > 0 && (
-                            <List>
-                                {clients.map((client, index) => (
-                                    <React.Fragment key={client.id || index}>
-                                        <ListItem>
-                                            <ListItemText
-                                                primary={`ID: ${client.id} | Name: ${client.name}`}
-                                                secondary={`Law Cases: ${client.lawCaseList?.length || 0}`}
-                                            />
-                                        </ListItem>
-                                        {index < clients.length - 1 && <Divider />}
-                                    </React.Fragment>
-                                ))}
-                            </List>
-                        )}
+                        {clients.length > 0 && clients.map(client => (
+                            <Card key={client.id} sx={{ mt: 2, bgcolor: "#e1bee7" }}>
+                                <CardContent>
+                                    <Typography variant="h6">{client.name}</Typography>
+                                    <Typography variant="body2"><strong>ID:</strong> {client.id}</Typography>
+                                    <Typography variant="body2">
+                                        <strong>Law Cases:</strong> {client.lawCaseList?.length || 0}
+                                    </Typography>
+                                    {client.lawCaseList && client.lawCaseList.length > 0 && (
+                                        <List>
+                                            {client.lawCaseList.map(lc => (
+                                                <ListItem key={lc.id} sx={{ pl: 0 }}>
+                                                    <ListItemText
+                                                        primary={lc.name}
+                                                        secondary={`ID: ${lc.id} | Lawyer: ${lc.lawyer?.name || lc.lawyerId || "—"}`}
+                                                    />
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        ))}
                     </Stack>
                 </Paper>
             </Container>
